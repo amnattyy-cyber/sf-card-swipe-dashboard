@@ -145,7 +145,7 @@ def short_name(n):
 
 
 def build_sms(w, region=None):
-    R = [r for r in w['records'] if region is None or r['region'] == region]; avail = w['available_dates']; n_left = len(w['dates']) - len(avail)
+    R = [r for r in w['records'] if r['focus_sf'] == 'Y' and (region is None or r['region'] == region)]; avail = w['available_dates']; n_left = len(w['dates']) - len(avail)
     passed = [r for r in R if r['flag'] == 'Pass']
     crit = [r for r in R if r['focus_sf'] == 'Y' and r['days_swiped'] == 0]
     crit_codes = {r['shop_code'] for r in crit}
@@ -156,7 +156,7 @@ def build_sms(w, region=None):
         L.append(f'มีข้อมูลการเสียบบัตรครบทั้ง {len(avail)} วัน (ผลสรุปสัปดาห์)')
     else:
         L.append(f'มีข้อมูลการเสียบบัตรเฉพาะวันที่ {date_span(avail)} (เหลืออีก {n_left} วันในสัปดาห์)')
-    L.append(f'ผ่านเกณฑ์แล้ว {len(passed)}/{len(R)} สาขา ({len(passed) / len(R) * 100:.1f}%) · เกณฑ์ผ่าน = เสียบบัตร {PASS_DAYS} วัน/week ขึ้นไป')
+    L.append(f'เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว {len(passed)}/{len(R)} สาขา ({len(passed) / max(len(R), 1) * 100:.1f}%) · เกณฑ์ผ่าน = เสียบบัตร {PASS_DAYS} วัน/week ขึ้นไป')
 
     def by_area(rows):
         out = []
@@ -175,15 +175,14 @@ def build_sms(w, region=None):
     for head, rs in by_area(crit):
         L += head + [f'- {short_name(r["shop_name"])}' for r in sorted(rs, key=lambda r: short_name(r['shop_name']))]
 
-    L += ['', f'⚠ ร้านที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ {len(notpass)} สาขา (ไม่รวมกลุ่มด้านบน)']
+    L += ['', f'⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ {len(notpass)} สาขา (ไม่รวมกลุ่มด้านบน)']
     if not notpass:
         L.append('✓ ไม่มี')
     for head, rs in by_area(notpass):
         L += head
         for r in sorted(rs, key=lambda r: (-r['days_swiped'], short_name(r['shop_name']))):
             need = max(PASS_DAYS - r['days_swiped'], 0)
-            focus = '' if r['focus_sf'] == 'Y' else ' (ไม่ Focus)'
-            L.append(f'- {short_name(r["shop_name"])}{focus}: เสียบ {r["days_swiped"]} วัน ต้องเสียบเพิ่ม {need} วัน')
+            L.append(f'- {short_name(r["shop_name"])}: เสียบ {r["days_swiped"]} วัน ต้องเสียบเพิ่ม {need} วัน')
     return '\n'.join(L)
 
 

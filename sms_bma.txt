@@ -1,7 +1,7 @@
 Dashboard Analysis: การเสียบบัตร SF+ · BMA
 · สัปดาห์ WK45 (2 พ.ย.–8 พ.ย. 2026)
 มีข้อมูลการเสียบบัตรเฉพาะวันที่ 2-3 พ.ย. (เหลืออีก 5 วันในสัปดาห์)
-ผ่านเกณฑ์แล้ว 14/58 สาขา (24.1%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
+เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 11/45 สาขา (24.4%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
 
 ⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 12 สาขา
 เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม 2 วัน
@@ -23,26 +23,19 @@ Dashboard Analysis: การเสียบบัตร SF+ · BMA
 - Fortune Town 1Fl.
 - Station Lotus's Rama 4
 
-⚠ ร้านที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 32 สาขา (ไม่รวมกลุ่มด้านบน)
-[BMA I - North West] 9 สาขา
+⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 22 สาขา (ไม่รวมกลุ่มด้านบน)
+[BMA I - North West] 5 สาขา
 - Big C Sukhapibal 5: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Ladprao: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central North Ville (ไม่ Focus): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central Plaza Chaengwattana (D) (ไม่ Focus): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Plaza Ramindra 1FL.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central West Gate (D) (ไม่ Focus): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Nakhon In: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Robinson Srisaman: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Big C Sukhaphiban 5 (D) (ไม่ Focus): เสียบ 0 วัน ต้องเสียบเพิ่ม 2 วัน
-[BMA II - South West] 5 สาขา
+[BMA II - South West] 4 สาขา
 - Central Rama 2: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Seacon Bangkae: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - The Mall Bangkae 2Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - The Mall Thapra: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Seacon Bangkae (D) (ไม่ Focus): เสียบ 0 วัน ต้องเสียบเพิ่ม 2 วัน
-[BMA III - North East] 4 สาขา
-- Fashion Island (D) (ไม่ Focus): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Future Park Rangsit (2 nd.) (D) (ไม่ Focus): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[BMA III - North East] 2 สาขา
 - Future Park Rangsit (H): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - iPlace Latkrabang: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 [BMA IV - South East] 4 สาขา
@@ -50,7 +43,7 @@ Dashboard Analysis: การเสียบบัตร SF+ · BMA
 - Mega Bangna: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Paradise Park Srinakarin: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Seacon Square 2: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA V - Central] 10 สาขา
+[BMA V - Central] 7 สาขา
 - Central World 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Kiosk Lotus's Ramindra: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Mahboon Krong 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
@@ -58,6 +51,3 @@ Dashboard Analysis: การเสียบบัตร SF+ · BMA
 - Silom Complex: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Terminal 21: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - at Chamchuri Square 1: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Emquartier (ไม่ Focus): เสียบ 0 วัน ต้องเสียบเพิ่ม 2 วัน
-- Supreme Complex (D) (ไม่ Focus): เสียบ 0 วัน ต้องเสียบเพิ่ม 2 วัน
-- U Chu Liang Building (ไม่ Focus): เสียบ 0 วัน ต้องเสียบเพิ่ม 2 วัน
