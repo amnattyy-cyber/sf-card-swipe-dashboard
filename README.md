@@ -10,6 +10,10 @@
    - `Report_Sell_Out_SF_*.csv` และ `Report_Sales_Funnel_*.csv` (ไม่บังคับ) ใช้ในไฟล์ Export CSV เท่านั้น
 3. รอ 1–2 นาที ดูสถานะได้ที่แท็บ **Actions** เมื่อขึ้นเครื่องหมาย ✓ สีเขียว ให้รีเฟรชหน้า dashboard
 
+## สรุป SMS ประจำวัน
+
+เปิด https://amnattyy-cyber.github.io/sf-card-swipe-dashboard/sms.html แล้วกด **📋 คัดลอกข้อความ** ระบบสร้างสรุปใหม่ทุกครั้งที่อัปโหลดไฟล์ Format SF (มีไฟล์ข้อความ `sms.txt` ให้ด้วย)
+
 ## หลักการทำงาน
 
 - Dashboard ใช้ชีต `WKxx` ใน Format_SF.xlsx โดยสัปดาห์ล่าสุดคือสัปดาห์สุดท้ายที่มีข้อมูล และแสดงย้อนหลัง 6 สัปดาห์

@@ -120,6 +120,80 @@ def read_funnel():
     g = df.groupby(['Shop Code', 'd'])[['Attempt', 'offer_seen', 'purchase_completed']].sum()
     return {(int(k[0]), k[1]): tuple(int(x) for x in v) for k, v in g.iterrows()}, set(df.d)
 
+THAI_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+PASS_DAYS = 2
+
+
+def thd(iso):
+    y, m, d = map(int, iso.split('-'))
+    return f'{d} {THAI_MONTHS[m - 1]}'
+
+
+def date_span(dates):
+    """'2-3 พ.ย.' for consecutive dates in one month, otherwise a comma list."""
+    if not dates:
+        return ''
+    days = [int(d[8:]) for d in dates]; months = {d[5:7] for d in dates}
+    if len(months) == 1 and days == list(range(days[0], days[0] + len(days))):
+        m = THAI_MONTHS[int(dates[0][5:7]) - 1]
+        return f'{days[0]} {m}' if len(days) == 1 else f'{days[0]}-{days[-1]} {m}'
+    return ', '.join(thd(d) for d in dates)
+
+
+def short_name(n):
+    return re.sub(r'^True Shop\s+', '', str(n)).strip()
+
+
+def build_sms(w):
+    R = w['records']; avail = w['available_dates']; n_left = len(w['dates']) - len(avail)
+    passed = [r for r in R if r['flag'] == 'Pass']
+    crit = [r for r in R if r['focus_sf'] == 'Y' and r['days_swiped'] == 0]
+    crit_codes = {r['shop_code'] for r in crit}
+    notpass = [r for r in R if r['flag'] != 'Pass' and r['shop_code'] not in crit_codes]
+    L = ['Dashboard Analysis: การเสียบบัตร SF+',
+         f"· สัปดาห์ {w['key']} ({thd(w['dates'][0])}–{thd(w['dates'][-1])} {w['dates'][-1][:4]})"]
+    if len(avail) == len(w['dates']):
+        L.append(f'มีข้อมูลการเสียบบัตรครบทั้ง {len(avail)} วัน (ผลสรุปสัปดาห์)')
+    else:
+        L.append(f'มีข้อมูลการเสียบบัตรเฉพาะวันที่ {date_span(avail)} (เหลืออีก {n_left} วันในสัปดาห์)')
+    L.append(f'ผ่านเกณฑ์แล้ว {len(passed)}/{len(R)} สาขา ({len(passed) / len(R) * 100:.1f}%) · เกณฑ์ผ่าน = เสียบบัตร {PASS_DAYS} วัน/week ขึ้นไป')
+
+    def by_area(rows):
+        out = []
+        groups = {}
+        for r in rows:
+            groups.setdefault((r['region'], r['area']), []).append(r)
+        for (_, area), rs in sorted(groups.items()):
+            out.append(f'[{area}] {len(rs)} สาขา')
+            yield out, rs
+            out.clear()
+
+    L += ['', f'⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) {len(crit)} สาขา',
+          f'เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม {PASS_DAYS} วัน']
+    if not crit:
+        L.append('✓ ไม่มี')
+    for head, rs in by_area(crit):
+        L += head + [f'- {short_name(r["shop_name"])}' for r in sorted(rs, key=lambda r: short_name(r['shop_name']))]
+
+    L += ['', f'⚠ ร้านที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ {len(notpass)} สาขา (ไม่รวมกลุ่มด้านบน)']
+    if not notpass:
+        L.append('✓ ไม่มี')
+    for head, rs in by_area(notpass):
+        L += head
+        for r in sorted(rs, key=lambda r: (-r['days_swiped'], short_name(r['shop_name']))):
+            need = max(PASS_DAYS - r['days_swiped'], 0)
+            focus = '' if r['focus_sf'] == 'Y' else ' (ไม่ Focus)'
+            L.append(f'- {short_name(r["shop_name"])}{focus}: เสียบ {r["days_swiped"]} วัน ต้องเสียบเพิ่ม {need} วัน')
+    return '\n'.join(L)
+
+
+def write_sms(w):
+    text = build_sms(w)
+    open(os.path.join(ROOT, 'sms.txt'), 'w', encoding='utf-8').write(text)
+    esc = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    page = open(os.path.join(ROOT, 'scripts', 'sms_template.html'), encoding='utf-8').read()
+    open(os.path.join(ROOT, 'sms.html'), 'w', encoding='utf-8').write(page.replace('__SMS__', esc).replace('__WEEK__', w['key']))
+
 
 def main():
     fmt_files = find('format')
@@ -162,6 +236,9 @@ def main():
     hist = {k: w for k, w in weeks.items() if w['available_dates']}
     os.makedirs(os.path.dirname(HIST), exist_ok=True)
     json.dump(hist, open(HIST, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+
+    latest_week = [w for w in out if w['available_dates']][-1]
+    write_sms(latest_week)
 
     # keep only the newest Format file so the next upload is unambiguous
     for f in fmt_files[:-1]:

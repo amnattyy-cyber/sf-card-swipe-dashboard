@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SF+ SMS Summary</title>
+<style>
+:root{--bg:#f9f9f7;--card:#fcfcfb;--text:#0b0b0b;--muted:#52514e;--border:rgba(11,11,11,.12);--accent:#2a78d6}
+@media (prefers-color-scheme:dark){:root{--bg:#0d0d0d;--card:#1a1a19;--text:#fff;--muted:#c3c2b7;--border:rgba(255,255,255,.12);--accent:#3987e5}}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:820px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:19px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;margin:0 0 14px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+button,a.btn{font:inherit;font-size:13.5px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;text-decoration:none}
+button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+pre{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;white-space:pre-wrap;word-break:break-word;font:13.5px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0}
+#ok{color:#0ca30c;font-size:13px;align-self:center}
+</style></head><body><div class="wrap">
+<h1>สรุป SMS · การเสียบบัตร SF+ __WEEK__</h1>
+<p class="sub">สร้างอัตโนมัติทุกครั้งที่อัปโหลดไฟล์ Format SF · กดคัดลอกแล้ววางในข้อความได้เลย</p>
+<div class="bar"><button class="primary" id="copy">📋 คัดลอกข้อความ</button><a class="btn" href="./">← กลับไป Dashboard</a><span id="ok"></span></div>
+<pre id="sms">__SMS__</pre>
+</div>
+<script>
+document.getElementById('copy').addEventListener('click', async () => {
+  const t = document.getElementById('sms').innerText, ok = document.getElementById('ok');
+  try { await navigator.clipboard.writeText(t); ok.textContent = '✓ คัดลอกแล้ว'; }
+  catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById('sms')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); ok.textContent = 'เลือกข้อความแล้ว กด Ctrl+C เพื่อคัดลอก'; }
+  setTimeout(() => ok.textContent = '', 3000);
+});
+</script></body></html>
