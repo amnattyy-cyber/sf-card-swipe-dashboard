@@ -58,17 +58,30 @@ def read_format(path):
     return weeks
 
 
+SELL_HIST = os.path.join(ROOT, 'history', 'sellout_daily.json')
+
+
 def read_sellout():
+    """Sell out units per shop per day.  Raw CSVs (which contain IMEIs) are reduced to
+    shop/day counts, merged into history/sellout_daily.json, and then deleted."""
+    hist = json.load(open(SELL_HIST, encoding='utf-8')) if os.path.exists(SELL_HIST) else {}
     files = latest('Report_Sell_Out*.csv')
-    if not files:
+    if files:
+        df = pd.concat([pd.read_csv(f, encoding='utf-8-sig', dtype={'Mobile_IMEI': str}) for f in files])
+        # the report can list one device (IMEI) several times under different product codes
+        df = df.dropna(subset=['Mobile_IMEI']).drop_duplicates(subset=['Mobile_IMEI'], keep='last')
+        df['d'] = pd.to_datetime(df['Financed_Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
+        new = {}
+        for (sc, d), q in df.groupby(['Partner Code', 'd'])['QTY SF+'].sum().items():
+            new.setdefault(d, {})[str(int(sc))] = int(q)
+        hist.update(new)  # dates in the new file replace older counts for those dates
+        json.dump(hist, open(SELL_HIST, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True)
+        for f in files:
+            os.remove(f)
+    if not hist:
         return {}, (None, None)
-    df = pd.concat([pd.read_csv(f, encoding='utf-8-sig', dtype={'Mobile_IMEI': str}) for f in files])
-    # the report can list one device (IMEI) several times under different product codes
-    df = df.dropna(subset=['Mobile_IMEI'])
-    df = df.drop_duplicates(subset=['Mobile_IMEI'], keep='last')
-    df['d'] = pd.to_datetime(df['Financed_Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
-    qty = df.groupby(['Partner Code', 'd'])['QTY SF+'].sum()
-    return {(int(k[0]), k[1]): int(v) for k, v in qty.items()}, (df.d.min(), df.d.max())
+    sell = {(int(sc), d): q for d, shops in hist.items() for sc, q in shops.items()}
+    return sell, (min(hist), max(hist))
 
 
 def read_funnel():
