@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF+ Card Swipe Dashboard</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-page:   #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --success-text:   #006300;
+
+    --series-1: #2a78d6; /* blue */
+    --series-2: #008300; /* green */
+    --series-3: #e87ba4; /* magenta */
+    --series-4: #eda100; /* yellow */
+    --series-5: #1baf7a; /* aqua */
+    --series-6: #eb6834; /* orange */
+    --series-7: #4a3aa7; /* violet */
+    --series-8: #e34948; /* red */
+
+    --status-good:     #0ca30c;
+    --status-warning:  #fab219;
+    --status-serious:  #ec835a;
+    --status-critical: #d03b3b;
+    --status-muted:    #a9a79f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --surface-page:   #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --gridline:       #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --success-text:   #0ca30c;
+
+      --series-1: #3987e5;
+      --series-2: #008300;
+      --series-3: #d55181;
+      --series-4: #c98500;
+      --series-5: #199e70;
+      --series-6: #d95926;
+      --series-7: #9085e9;
+      --series-8: #e66767;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-page:   #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --success-text:   #0ca30c;
+
+    --series-1: #3987e5;
+    --series-2: #008300;
+    --series-3: #d55181;
+    --series-4: #c98500;
+    --series-5: #199e70;
+    --series-6: #d95926;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--surface-page);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text-primary);
+  }
+  .viz-root { padding: 20px 24px 48px; max-width: 1400px; margin: 0 auto; }
+
+  .theme-toggle {
+    position: fixed; top: 14px; right: 18px; z-index: 50;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 12px; font-size: 12.5px;
+    color: var(--text-secondary); cursor: pointer;
+  }
+
+  header.dash-header { margin-bottom: 18px; padding-right: 90px; }
+  header.dash-header h1 { font-size: 22px; margin: 0 0 4px; font-weight: 700; }
+  header.dash-header .sub { color: var(--text-secondary); font-size: 13.5px; margin: 0; }
+
+  .banner {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-left: 4px solid var(--status-warning);
+    border-radius: 8px; padding: 10px 14px; margin: 14px 0 20px;
+    font-size: 13px; color: var(--text-secondary); line-height: 1.55;
+    transition: border-left-color .15s ease;
+  }
+  .banner b { color: var(--text-primary); }
+  .banner-dynamic {
+    font-size: 13.5px; color: var(--text-primary); font-weight: 600;
+    margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--gridline);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .banner-dynamic .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-page); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2px 9px;
+  }
+  .banner-dynamic .chip .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .banner-dynamic .insight-rate { font-weight: 800; }
+  .banner-static { opacity: .92; }
+
+  /* filters */
+  .filters {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 20px;
+  }
+  .filter-field { display: flex; flex-direction: column; gap: 4px; }
+  .filter-field label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .02em; }
+  .filter-field select, .filter-field input[type=text] {
+    font-family: inherit; font-size: 13px; padding: 6px 8px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface-page); color: var(--text-primary);
+    min-width: 132px;
+  }
+  .filter-field input[type=text] { min-width: 180px; }
+
+  /* multi-select dropdown */
+  .ms-dropdown { position: relative; min-width: 150px; }
+  .ms-button {
+    width: 100%; font-family: inherit; font-size: 13px; padding: 6px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--surface-page); color: var(--text-primary);
+    cursor: pointer; text-align: left; display: flex; align-items: center;
+    justify-content: space-between; gap: 6px; white-space: nowrap;
+  }
+  .ms-button .ms-btn-label { overflow: hidden; text-overflow: ellipsis; }
+  .ms-button .ms-caret { color: var(--text-muted); font-size: 10px; flex-shrink: 0; }
+  .ms-button .ms-count-badge {
+    background: var(--series-1); color: #fff; border-radius: 10px;
+    font-size: 10.5px; font-weight: 700; padding: 1px 6px; flex-shrink: 0;
+  }
+  .ms-dropdown.open .ms-button { border-color: var(--series-1); }
+  .ms-panel {
+    position: absolute; top: calc(100% + 4px); left: 0; z-index: 30;
+    min-width: 220px; max-width: 320px;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    padding: 6px; display: none;
+  }
+  .ms-dropdown.open .ms-panel { display: block; }
+  .ms-panel-actions { display: flex; gap: 6px; padding: 4px 6px 8px; border-bottom: 1px solid var(--gridline); margin-bottom: 4px; }
+  .ms-panel-actions button {
+    font-size: 11px; color: var(--series-1); background: transparent; border: none;
+    cursor: pointer; font-family: inherit; padding: 0;
+  }
+  .ms-panel-actions button:hover { text-decoration: underline; }
+  .ms-options { max-height: 260px; overflow-y: auto; }
+  .ms-option {
+    display: flex; align-items: center; gap: 8px; padding: 6px 6px;
+    border-radius: 5px; cursor: pointer; font-size: 12.5px; color: var(--text-primary);
+  }
+  .ms-option:hover { background: var(--surface-page); }
+  .ms-option input[type=checkbox] { accent-color: var(--series-1); width: 14px; height: 14px; cursor: pointer; flex-shrink: 0; }
+  .ms-option .ms-opt-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .reset-btn {
+    font-size: 12.5px; padding: 7px 12px; border-radius: 6px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-secondary); cursor: pointer; font-family: inherit;
+  }
+  .reset-btn:hover { background: var(--surface-page); }
+  .filter-count { font-size: 12px; color: var(--text-muted); margin-left: auto; align-self: center; }
+
+  /* stat tiles */
+  .stat-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;
+    margin-bottom: 22px;
+  }
+  @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 620px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-tile {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .stat-tile .label { font-size: 11.5px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+  .stat-tile .value { font-size: 24px; font-weight: 700; line-height: 1.1; }
+  .stat-tile .delta { font-size: 11.5px; margin-top: 5px; color: var(--text-secondary); }
+  .stat-tile.crit .value { color: var(--status-critical); }
+  .stat-tile.warn .value { color: var(--status-warning); }
+  .stat-tile.good .value { color: var(--status-good); }
+
+  /* card / chart layout */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface-1); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px 10px; margin-bottom: 14px;
+  }
+  .card h2 { font-size: 14.5px; margin: 0 0 2px; font-weight: 700; }
+  .card .card-sub { font-size: 12px; color: var(--text-muted); margin: 0 0 10px; }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .table-toggle {
+    font-size: 11px; color: var(--text-secondary); background: transparent;
+    border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px;
+    cursor: pointer; font-family: inherit; white-space: nowrap;
+  }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: var(--text-secondary); margin: 4px 0 10px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+  .bar-label { font-size: 11px; fill: var(--text-secondary); }
+  .axis-label { font-size: 10.5px; fill: var(--text-muted); }
+  .cat-label { font-size: 11.5px; fill: var(--text-primary); }
+  .value-label { font-size: 11px; fill: var(--text-primary); font-weight: 600; }
+  .gridline { stroke: var(--gridline); stroke-width: 1; }
+  .baseline { stroke: var(--baseline); stroke-width: 1; }
+
+  .tooltip {
+    position: fixed; pointer-events: none; z-index: 100;
+    background: var(--text-primary); color: var(--surface-1);
+    font-size: 12px; padding: 7px 10px; border-radius: 6px;
+    line-height: 1.5; box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    opacity: 0; transition: opacity .08s ease; max-width: 260px;
+  }
+  :root[data-theme="dark"] .tooltip { background: #ffffff; color: #0b0b0b; }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .tooltip { background: #ffffff; color: #0b0b0b; }
+  }
+  .tooltip .tt-title { font-weight: 700; margin-bottom: 3px; }
+  .tooltip .tt-row { display: flex; justify-content: space-between; gap: 12px; }
+  .tooltip .tt-val { font-weight: 700; }
+
+  .empty-state { padding: 30px; text-align: center; color: var(--text-muted); font-size: 13px; }
+
+  /* tables */
+  .table-wrap { max-height: 420px; overflow: auto; border: 1px solid var(--gridline); border-radius: 8px; }
+  table.data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.data-table thead th {
+    position: sticky; top: 0; background: var(--surface-1);
+    text-align: left; padding: 8px 10px; font-size: 11px; color: var(--text-muted);
+    border-bottom: 1px solid var(--gridline); cursor: pointer; white-space: nowrap;
+    user-select: none;
+  }
+  table.data-table thead th:hover { color: var(--text-primary); }
+  table.data-table thead th.sorted::after { content: attr(data-arrow); margin-left: 4px; color: var(--text-secondary); }
+  table.data-table tbody td { padding: 7px 10px; border-bottom: 1px solid var(--gridline); font-variant-numeric: tabular-nums; }
+  table.data-table tbody tr:hover { background: var(--surface-page); }
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .pill.pass { background: color-mix(in srgb, var(--status-good) 16%, transparent); color: var(--status-good); }
+  .pill.notpass { background: color-mix(in srgb, var(--status-critical) 14%, transparent); color: var(--status-critical); }
+  .pill.na { background: color-mix(in srgb, var(--status-muted) 20%, transparent); color: var(--text-muted); }
+
+  footer.dash-footer { margin-top: 18px; font-size: 11.5px; color: var(--text-muted); text-align: center; }
+
+  /* week tabs */
+  .week-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .week-tab {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    padding: 8px 14px; border-radius: 9px; border: 1px solid var(--border);
+    background: var(--surface-1); cursor: pointer; font-family: inherit;
+    min-width: 150px; text-align: left; transition: border-color .1s ease;
+  }
+  .week-tab .wt-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .week-tab .wt-sub { font-size: 11px; color: var(--text-muted); }
+  .week-tab.active { border: 2px solid var(--series-1); padding: 7px 13px; }
+  .week-tab .wt-tag {
+    font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 10px; margin-top: 2px;
+  }
+  .week-tab .wt-tag.has-data { background: color-mix(in srgb, var(--status-good) 16%, transparent); color: var(--status-good); }
+  .week-tab .wt-tag.no-data { background: color-mix(in srgb, var(--status-muted) 20%, transparent); color: var(--text-muted); }
+
+  /* main tab navigation */
+  .main-tabs { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .main-tab-btn {
+    font-family: inherit; font-size: 13.5px; font-weight: 600; padding: 10px 16px;
+    background: transparent; border: none; border-bottom: 2px solid transparent;
+    color: var(--text-secondary); cursor: pointer; margin-bottom: -1px;
+  }
+  .main-tab-btn:hover { color: var(--text-primary); }
+  .main-tab-btn.active { color: var(--series-1); border-bottom-color: var(--series-1); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .stat-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 700px) { .stat-grid.cols-4 { grid-template-columns: repeat(2, 1fr); } }
+
+  .info-box {
+    background: var(--surface-1); border: 1px solid var(--border); border-left: 4px solid var(--series-1);
+    border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; font-size: 12.5px; color: var(--text-secondary); line-height: 1.7;
+  }
+  .info-box b { color: var(--text-primary); }
+
+  /* trend status pills */
+  .pill.trend-active { background: color-mix(in srgb, var(--status-good) 16%, transparent); color: var(--status-good); }
+  .pill.trend-cautious { background: color-mix(in srgb, var(--status-warning) 20%, transparent); color: #8a6300; }
+  .pill.trend-severe { background: color-mix(in srgb, var(--status-serious) 18%, transparent); color: #b24a1e; }
+  .pill.trend-dead { background: color-mix(in srgb, var(--status-critical) 14%, transparent); color: var(--status-critical); }
+  :root[data-theme="dark"] .pill.trend-cautious { color: var(--status-warning); }
+  :root[data-theme="dark"] .pill.trend-severe { color: var(--status-serious); }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .pill.trend-cautious { color: var(--status-warning); }
+    :root:where(:not([data-theme="light"])) .pill.trend-severe { color: var(--status-serious); }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle">🌓 Theme</button>
+<div class="viz-root" data-palette="#2a78d6,#008300,#e87ba4,#eda100,#1baf7a,#eb6834,#4a3aa7,#e34948">
+
+  <header class="dash-header">
+    <h1>Dashboard Analysis: การเสียบบัตร SF+</h1>
+    <p class="sub" id="weekSubtitle">ภาพรวมความสม่ำเสมอในการเสียบบัตร SF+ รายสาขา · True Shop ทั่วประเทศ</p>
+  </header>
+
+  <div class="main-tabs" id="mainTabs">
+    <button class="main-tab-btn active" id="mainTabBtnPerf" type="button">Performance by Week</button>
+    <button class="main-tab-btn" id="mainTabBtnTrend" type="button">Trend Performance</button>
+  </div>
+
+  <div class="tab-panel active" id="tabPanelPerf">
+
+  <div class="week-tabs" id="weekTabs"></div>
+
+  <div class="banner" id="dataBanner">
+    <div class="banner-dynamic" id="bannerDynamic"></div>
+    <div class="banner-static" id="bannerStatic"></div>
+  </div>
+
+  <div class="filters" id="filters">
+    <div class="filter-field">
+      <label id="f-region-label">ภูมิภาค (Region)</label>
+      <div class="ms-dropdown" id="f-region"></div>
+    </div>
+    <div class="filter-field">
+      <label id="f-area-label">พื้นที่ (Area)</label>
+      <div class="ms-dropdown" id="f-area"></div>
+    </div>
+    <div class="filter-field">
+      <label id="f-type-label">ประเภทร้าน (Type Shop)</label>
+      <div class="ms-dropdown" id="f-type"></div>
+    </div>
+    <div class="filter-field">
+      <label id="f-size-label">ขนาดร้าน (Size)</label>
+      <div class="ms-dropdown" id="f-size"></div>
+    </div>
+    <div class="filter-field">
+      <label id="f-focus-label">Focus SF+</label>
+      <div class="ms-dropdown" id="f-focus"></div>
+    </div>
+    <div class="filter-field">
+      <label id="f-flag-label">สถานะ (Flag)</label>
+      <div class="ms-dropdown" id="f-flag"></div>
+    </div>
+    <div class="filter-field">
+      <label for="f-search">ค้นหาชื่อ/รหัสร้าน</label>
+      <input type="text" id="f-search" placeholder="พิมพ์ชื่อร้านหรือรหัส...">
+    </div>
+    <button class="reset-btn" id="resetFilters">ล้างตัวกรอง</button>
+    <div class="filter-count" id="filterCount"></div>
+  </div>
+
+  <div class="stat-grid" id="statGrid"></div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>แนวโน้มการเสียบบัตรรายวัน</h2>
+          <p class="card-sub" id="trendCardSub">จำนวนร้านที่เสียบบัตร vs จำนวนครั้งที่เสียบบัตรทั้งหมด</p>
+        </div>
+        <button class="table-toggle" data-target="trendTable">ดูตาราง</button>
+      </div>
+      <div class="legend" id="trendLegend"></div>
+      <div id="trendChart"></div>
+      <div class="table-wrap" id="trendTable" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>สัดส่วนจำนวนวันที่เสียบบัตรสำเร็จ</h2>
+          <p class="card-sub" id="daysCardSub">จากจำนวนวันที่มีข้อมูล</p>
+        </div>
+        <button class="table-toggle" data-target="daysTable">ดูตาราง</button>
+      </div>
+      <div id="daysChart"></div>
+      <div class="table-wrap" id="daysTable" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h2>อัตราผ่านเกณฑ์ (Pass Rate) แยกตามพื้นที่ (Area)</h2>
+        <p class="card-sub">เรียงจากมากไปน้อย · เส้นฐานเทียบค่าเฉลี่ยรวมทั้งหมด</p>
+      </div>
+      <button class="table-toggle" data-target="areaTable">ดูตาราง</button>
+    </div>
+    <div class="legend" id="statusLegend"></div>
+    <div id="areaChart"></div>
+    <div class="table-wrap" id="areaTable" style="display:none;"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Pass Rate แยกตามภูมิภาค (Region)</h2>
+          <p class="card-sub">BMA / UPC I / UPC II</p>
+        </div>
+        <button class="table-toggle" data-target="regionTable">ดูตาราง</button>
+      </div>
+      <div id="regionChart"></div>
+      <div class="table-wrap" id="regionTable" style="display:none;"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Pass Rate แยกตามประเภทร้าน (Type Shop)</h2>
+          <p class="card-sub">COCO และ Hall ไม่อยู่ในขอบเขต Focus SF+ (Focus = N ทั้งหมด)</p>
+        </div>
+        <button class="table-toggle" data-target="typeTable">ดูตาราง</button>
+      </div>
+      <div id="typeChart"></div>
+      <div class="table-wrap" id="typeTable" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Pass Rate แยกตามขนาดร้าน (Size Shop)</h2>
+          <p class="card-sub">S / M / L</p>
+        </div>
+        <button class="table-toggle" data-target="sizeTable">ดูตาราง</button>
+      </div>
+      <div id="sizeChart"></div>
+      <div class="table-wrap" id="sizeTable" style="display:none;"></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Focus SF+ กับผลการผ่านเกณฑ์</h2>
+          <p class="card-sub">เปรียบเทียบร้านที่ถูกกำหนดเป็นร้าน Focus (Y) กับร้านที่ไม่ใช่ (N)</p>
+        </div>
+        <button class="table-toggle" data-target="focusTable">ดูตาราง</button>
+      </div>
+      <div class="legend" id="focusLegend"></div>
+      <div id="focusChart"></div>
+      <div class="table-wrap" id="focusTable" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h2 style="color:var(--status-critical);">⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย)</h2>
+        <p class="card-sub" id="criticalCardSub">ร้าน Focus = Y ที่ยังไม่เสียบบัตรเลยในทุกวันที่มีข้อมูล — กลุ่มที่ต้องเร่งติดตามก่อน</p>
+      </div>
+    </div>
+    <div class="table-wrap" id="criticalTableWrap"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h2 style="color:var(--status-good);">✓ ร้านที่ผ่านเกณฑ์ (Pass) แล้วในสัปดาห์นี้</h2>
+        <p class="card-sub" id="passCardSub">เสียบบัตรครบทุกวันที่มีข้อมูล — ตัวอย่างพฤติกรรมที่ดี</p>
+      </div>
+    </div>
+    <div class="table-wrap" id="passTableWrap"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h2>รายชื่อร้านค้าทั้งหมด</h2>
+        <p class="card-sub" id="allTableCardSub">ตารางแบบละเอียด ค้นหา/เรียงลำดับได้ ปรับตามตัวกรองด้านบน</p>
+      </div>
+      <button class="table-toggle" id="exportCsvBtn">⬇ Export CSV</button>
+    </div>
+    <div class="table-wrap" id="allTableWrap" style="max-height:520px;"></div>
+  </div>
+
+  <footer class="dash-footer" id="dashFooter">
+    สร้างจากไฟล์ Format SF.xlsx · จัดทำเพื่อการวิเคราะห์ภายในเท่านั้น
+  </footer>
+
+  </div>
+
+  <div class="tab-panel" id="tabPanelTrend">
+
+    <div class="week-tabs" id="trendWeekTabs"></div>
+
+    <div class="banner" id="trendBanner">
+      <div class="banner-dynamic" id="trendBannerDynamic"></div>
+      <div class="banner-static" id="trendBannerStatic"></div>
+    </div>
+
+    <div class="info-box" id="trendInfoBox"></div>
+
+    <div class="filters" id="trendFilters">
+      <div class="filter-field">
+        <label for="tf-region">ภูมิภาค (Region)</label>
+        <div class="ms-dropdown" id="tf-region"></div>
+      </div>
+      <div class="filter-field">
+        <label for="tf-area">พื้นที่ (Area)</label>
+        <div class="ms-dropdown" id="tf-area"></div>
+      </div>
+      <div class="filter-field">
+        <label for="tf-type">ประเภทร้าน (Type Shop)</label>
+        <div class="ms-dropdown" id="tf-type"></div>
+      </div>
+      <div class="filter-field">
+        <label for="tf-size">ขนาดร้าน (Size)</label>
+        <div class="ms-dropdown" id="tf-size"></div>
+      </div>
+      <div class="filter-field">
+        <label for="tf-focus">Focus SF+</label>
+        <div class="ms-dropdown" id="tf-focus"></div>
+      </div>
+      <div class="filter-field">
+        <label for="tf-search">ค้นหาชื่อ/รหัสร้าน</label>
+        <input type="text" id="tf-search" placeholder="พิมพ์ชื่อร้านหรือรหัส...">
+      </div>
+      <button class="reset-btn" id="trendResetFilters">ล้างตัวกรอง</button>
+      <div class="filter-count" id="trendFilterCount"></div>
+    </div>
+
+    <div class="stat-grid cols-4" id="trendStatGrid"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>เลขจำนวนร้าน ในแต่ละ Status</h2>
+            <p class="card-sub">จำแนกตามพฤติกรรมการเสียบบัตรใน 4 สัปดาห์ล่าสุด</p>
+          </div>
+          <button class="table-toggle" data-target="trendStatusChartTable">ดูตาราง</button>
+        </div>
+        <div class="legend" id="trendStatusLegend"></div>
+        <div id="trendStatusChart"></div>
+        <div class="table-wrap" id="trendStatusChartTable" style="display:none;"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>%ร้าน ในแต่ละ Status</h2>
+            <p class="card-sub">Total = 100%</p>
+          </div>
+        </div>
+        <div id="trendStatusPctChart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>ตารางสรุป: เลขจำนวนร้าน ในแต่ละ Status</h2>
+          <p class="card-sub">จำนวนสาขา แยกตามสถานะ ต่อสัปดาห์ (คำนวณจากข้อมูลย้อนหลัง 4 สัปดาห์ ณ สัปดาห์นั้น)</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="trendCountTableWrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>ตารางสรุป: %ร้าน ในแต่ละ Status (Total = 100%)</h2>
+          <p class="card-sub">สัดส่วนสาขา แยกตามสถานะ ต่อสัปดาห์</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="trendPctTableWrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>รายละเอียดระดับสาขา</h2>
+          <p class="card-sub" id="trendDetailCardSub">สถานะและพฤติกรรมการเสียบบัตรรายสาขา ปรับตามตัวกรองด้านบน</p>
+        </div>
+        <button class="table-toggle" id="trendExportCsvBtn">⬇ Export CSV</button>
+      </div>
+      <div class="table-wrap" id="trendDetailTableWrap" style="max-height:520px;"></div>
+    </div>
+
+    <footer class="dash-footer" id="trendDashFooter"></footer>
+
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+const WEEKS = /*__WEEKS__*/;
+
+/* ---------- theme toggle ---------- */
+(function(){
+  const btn = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  let mode = null;
+  btn.addEventListener('click', () => {
+    if (mode === 'dark') { mode = 'light'; }
+    else if (mode === 'light') { mode = null; }
+    else { mode = 'dark'; }
+    if (mode) root.setAttribute('data-theme', mode);
+    else root.removeAttribute('data-theme');
+  });
+})();
+
+/* ---------- date helpers ---------- */
+const THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const THAI_WEEKDAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+function parseISODateLocal(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+function formatThaiDate(s, withWeekday) {
+  const dt = parseISODateLocal(s);
+  const base = `${dt.getDate()} ${THAI_MONTHS[dt.getMonth()]}`;
+  return withWeekday ? `${base} (${THAI_WEEKDAYS[dt.getDay()]})` : base;
+}
+function formatThaiDateShort(s) {
+  const dt = parseISODateLocal(s);
+  return `${dt.getDate()} ${THAI_MONTHS[dt.getMonth()]}`;
+}
+
+/* ---------- week state ---------- */
+function pickDefaultWeekKey() {
+  const withData = WEEKS.filter(w => w.available_dates.length > 0);
+  if (withData.length) return withData[withData.length - 1].key;
+  return WEEKS[WEEKS.length - 1].key;
+}
+
+let CURRENT_WEEK = null;
+let RAW_DATA = [];
+let AVAILABLE_DATES = [];
+let ALL_DATES = [];
+let OVERALL_AVG_PASS_RATE = 0;
+
+/* ---------- filter state ---------- */
+const state = { region: [], area: [], type: [], size: [], focus: [], flag: [], search: '' };
+
+function pct(n, d) { return d === 0 ? 0 : (n / d * 100); }
+function fmtPct(n) { return n.toFixed(1) + '%'; }
+function statusForRate(rate) {
+  if (rate === 0) return 'critical';
+  if (rate <= OVERALL_AVG_PASS_RATE) return 'warning';
+  return 'good';
+}
+const STATUS_COLOR = {
+  good: 'var(--status-good)',
+  warning: 'var(--status-warning)',
+  serious: 'var(--status-serious)',
+  critical: 'var(--status-critical)',
+  muted: 'var(--status-muted)'
+};
+
+function dayVal(r, dateStr) { return (r.days && r.days[dateStr]) || 0; }
+function neverSwiped(r) {
+  if (AVAILABLE_DATES.length === 0) return true;
+  return AVAILABLE_DATES.every(d => dayVal(r, d) === 0);
+}
+
+/* ---------- week tabs ---------- */
+function buildWeekTabs() {
+  const wrap = document.getElementById('weekTabs');
+  wrap.innerHTML = '';
+  WEEKS.forEach(w => {
+    const hasData = w.available_dates.length > 0;
+    const btn = document.createElement('button');
+    btn.className = 'week-tab' + (w.key === CURRENT_WEEK.key ? ' active' : '');
+    const title = document.createElement('div'); title.className = 'wt-title'; title.textContent = w.key;
+    const sub = document.createElement('div'); sub.className = 'wt-sub';
+    sub.textContent = w.dates.length ? `${formatThaiDateShort(w.dates[0])} – ${formatThaiDateShort(w.dates[w.dates.length-1])}` : '';
+    const tag = document.createElement('div');
+    tag.className = 'wt-tag ' + (hasData ? 'has-data' : 'no-data');
+    tag.textContent = hasData ? `มีข้อมูล ${w.available_dates.length}/${w.dates.length} วัน` : 'ยังไม่มีข้อมูล';
+    btn.appendChild(title); btn.appendChild(sub); btn.appendChild(tag);
+    btn.addEventListener('click', () => { if (w.key !== CURRENT_WEEK.key) switchWeek(w.key); });
+    wrap.appendChild(btn);
+  });
+}
+
+function switchWeek(key) {
+  CURRENT_WEEK = WEEKS.find(w => w.key === key);
+  RAW_DATA = CURRENT_WEEK.records;
+  AVAILABLE_DATES = CURRENT_WEEK.available_dates;
+  ALL_DATES = CURRENT_WEEK.dates;
+  OVERALL_AVG_PASS_RATE = pct(RAW_DATA.filter(r => r.flag === 'Pass').length, RAW_DATA.length);
+
+  // reset filters on week switch
+  state.region=[]; state.area=[]; state.type=[]; state.size=[]; state.focus=[]; state.flag=[]; state.search='';
+  document.getElementById('f-search').value = '';
+
+  buildMultiSelect('f-region', 'region', uniqueSorted(RAW_DATA, 'region'), 'ทุกภูมิภาค', v => v);
+  buildMultiSelect('f-area', 'area', uniqueSorted(RAW_DATA, 'area'), 'ทุกพื้นที่', v => v);
+  buildMultiSelect('f-type', 'type', uniqueSorted(RAW_DATA, 'type_shop'), 'ทุกประเภทร้าน', v => v);
+  buildMultiSelect('f-size', 'size', uniqueSorted(RAW_DATA, 'size_shop'), 'ทุกขนาด', v => v);
+  buildMultiSelect('f-focus', 'focus', ['Y','N'], 'ทุกสถานะ Focus', v => v === 'Y' ? 'Focus (Y)' : 'ไม่ Focus (N)');
+  buildMultiSelect('f-flag', 'flag', ['Pass','Not Pass'], 'ทุกสถานะ', v => v);
+
+  document.getElementById('weekSubtitle').textContent =
+    `ภาพรวมความสม่ำเสมอในการเสียบบัตร SF+ รายสาขา · สัปดาห์ ${CURRENT_WEEK.key} (${formatThaiDateShort(ALL_DATES[0])}–${formatThaiDateShort(ALL_DATES[ALL_DATES.length-1])} 2026) · True Shop ทั่วประเทศ`;
+  document.getElementById('dashFooter').textContent =
+    `สร้างจากไฟล์ Format SF.xlsx (ชีต ${CURRENT_WEEK.key}) · Sell Out จาก Report_Sell_Out_SF_20261001-02.csv · Offer Seen/Purchase จาก Report_Sales_Funnel_20261101-02.csv · เฉพาะร้านใน Master ${RAW_DATA.length} สาขา · จัดทำเพื่อการวิเคราะห์ภายในเท่านั้น`;
+
+  updateStaticBanner();
+  buildStatusLegend();
+  buildWeekTabs();
+
+  const nDates = AVAILABLE_DATES.length || 1;
+  document.getElementById('trendCardSub').textContent =
+    AVAILABLE_DATES.length ? `จำนวนร้านที่เสียบบัตร vs จำนวนครั้งที่เสียบบัตรทั้งหมด (${AVAILABLE_DATES.length} วันที่มีข้อมูล)` : 'ยังไม่มีข้อมูลนำเข้าสำหรับสัปดาห์นี้';
+  document.getElementById('daysCardSub').textContent =
+    AVAILABLE_DATES.length ? `จากจำนวนวันที่มีข้อมูล ${AVAILABLE_DATES.length} วัน (0–${AVAILABLE_DATES.length} วัน)` : 'ยังไม่มีข้อมูลนำเข้าสำหรับสัปดาห์นี้';
+  document.getElementById('criticalCardSub').textContent =
+    `ร้าน Focus = Y ที่ยังไม่เสียบบัตรเลยในทุกวันที่มีข้อมูล (${AVAILABLE_DATES.length} วัน) — กลุ่มที่ต้องเร่งติดตามก่อน`;
+  document.getElementById('passCardSub').textContent =
+    `เสียบบัตรอย่างน้อย 2 วัน จากทั้งหมด ${AVAILABLE_DATES.length} วันที่มีข้อมูล — ตัวอย่างพฤติกรรมที่ดี`;
+
+  render();
+}
+
+function updateStaticBanner() {
+  const el = document.getElementById('bannerStatic');
+  const nAvail = AVAILABLE_DATES.length;
+  const nAll = ALL_DATES.length;
+  if (nAvail === 0) {
+    el.innerHTML = `<b>สัปดาห์ ${CURRENT_WEEK.key} ยังไม่มีข้อมูลนำเข้าเลย</b> — ยังไม่มีการเสียบบัตรถูกบันทึกในสัปดาห์นี้ (${formatThaiDate(ALL_DATES[0])} – ${formatThaiDate(ALL_DATES[nAll-1])}) ตัวเลขทั้งหมดด้านล่างจึงเป็น 0 ชั่วคราว จนกว่าจะมีข้อมูลนำเข้า`;
+  } else if (nAvail === nAll) {
+    el.innerHTML = `<b>ข้อมูลครบสัปดาห์แล้ว:</b> มีข้อมูลการเสียบบัตรครบทั้ง ${nAll} วัน (${formatThaiDate(ALL_DATES[0])} – ${formatThaiDate(ALL_DATES[nAll-1])}) เกณฑ์ <b>Pass = เสียบบัตรอย่างน้อย 2 วันขึ้นไปในสัปดาห์</b> ตัวเลขในหน้านี้ถือเป็น <b>ผลสรุปสัปดาห์ ${CURRENT_WEEK.key}</b>`;
+  } else {
+    const availList = AVAILABLE_DATES.map(d => formatThaiDate(d)).join(', ');
+    const missing = ALL_DATES.filter(d => !AVAILABLE_DATES.includes(d));
+    el.innerHTML = `<b>ข้อมูล ณ วันปัจจุบันของสัปดาห์:</b> มีข้อมูลการเสียบบัตรเฉพาะวันที่ <b>${availList}</b> เท่านั้น (${nAvail} จาก ${nAll} วัน)
+      ส่วนอีก ${missing.length} วันที่เหลือยังไม่มีข้อมูลนำเข้า เกณฑ์ <b>Pass ในรายงานนี้ = เสียบบัตรอย่างน้อย 2 วัน จาก ${nAvail} วันที่มีข้อมูลอยู่ตอนนี้</b>
+      ตัวเลขจึงเป็นสถานะ <b>กลางสัปดาห์</b> ยังไม่ใช่ผลสรุปทั้งสัปดาห์ และมีแนวโน้มดีขึ้นเมื่อข้อมูลครบ ${nAll} วัน`;
+  }
+}
+
+/* ---------- filter options ---------- */
+function uniqueSorted(arr, key) {
+  return [...new Set(arr.map(r => r[key]))].sort((a,b)=>String(a).localeCompare(String(b)));
+}
+
+/* ---------- multi-select dropdown component ---------- */
+const MS_REGISTRY = {}; // key -> { rootId, allLabel, labelFn }
+
+function buildMultiSelect(rootId, key, values, allLabel, labelFn) {
+  MS_REGISTRY[key] = { rootId, allLabel, labelFn, values };
+  const root = document.getElementById(rootId);
+  root.innerHTML = '';
+  root.classList.remove('open');
+
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'ms-button';
+  const btnLabel = document.createElement('span'); btnLabel.className = 'ms-btn-label';
+  const badge = document.createElement('span'); badge.className = 'ms-count-badge'; badge.style.display = 'none';
+  const caret = document.createElement('span'); caret.className = 'ms-caret'; caret.textContent = '▾';
+  btn.appendChild(btnLabel); btn.appendChild(badge); btn.appendChild(caret);
+
+  const panel = document.createElement('div'); panel.className = 'ms-panel';
+  const actions = document.createElement('div'); actions.className = 'ms-panel-actions';
+  const selectAllBtn = document.createElement('button'); selectAllBtn.type='button'; selectAllBtn.textContent = 'เลือกทั้งหมด';
+  const clearBtn = document.createElement('button'); clearBtn.type='button'; clearBtn.textContent = 'ล้าง';
+  actions.appendChild(selectAllBtn); actions.appendChild(clearBtn);
+  const options = document.createElement('div'); options.className = 'ms-options';
+
+  values.forEach(v => {
+    const opt = document.createElement('label'); opt.className = 'ms-option';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = v;
+    cb.checked = state[key].includes(v);
+    cb.addEventListener('change', () => {
+      const arr = state[key];
+      if (cb.checked) { if (!arr.includes(v)) arr.push(v); }
+      else { const i = arr.indexOf(v); if (i > -1) arr.splice(i, 1); }
+      updateMsButtonLabel(key);
+      render();
+    });
+    const txt = document.createElement('span'); txt.className = 'ms-opt-label'; txt.textContent = labelFn(v);
+    opt.appendChild(cb); opt.appendChild(txt);
+    options.appendChild(opt);
+  });
+
+  selectAllBtn.addEventListener('click', () => {
+    state[key] = [...values];
+    options.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true);
+    updateMsButtonLabel(key);
+    render();
+  });
+  clearBtn.addEventListener('click', () => {
+    state[key] = [];
+    options.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+    updateMsButtonLabel(key);
+    render();
+  });
+
+  panel.appendChild(actions); panel.appendChild(options);
+  panel.addEventListener('click', (e) => { e.stopPropagation(); });
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = root.classList.contains('open');
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+    if (!isOpen) root.classList.add('open');
+  });
+
+  root.appendChild(btn); root.appendChild(panel);
+  updateMsButtonLabel(key);
+}
+
+function updateMsButtonLabel(key) {
+  const meta = MS_REGISTRY[key];
+  if (!meta) return;
+  const root = document.getElementById(meta.rootId);
+  const btnLabel = root.querySelector('.ms-btn-label');
+  const badge = root.querySelector('.ms-count-badge');
+  const selected = state[key];
+  if (selected.length === 0) {
+    btnLabel.textContent = meta.allLabel;
+    badge.style.display = 'none';
+  } else if (selected.length <= 2) {
+    btnLabel.textContent = selected.map(meta.labelFn).join(', ');
+    badge.style.display = 'none';
+  } else {
+    btnLabel.textContent = meta.labelFn(selected[0]) + ' …';
+    badge.style.display = 'inline-block';
+    badge.textContent = selected.length;
+  }
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+});
+
+document.getElementById('f-search').addEventListener('input', e => {
+  state.search = e.target.value.trim().toLowerCase();
+  render();
+});
+document.getElementById('resetFilters').addEventListener('click', () => {
+  ['region','area','type','size','focus','flag'].forEach(key => {
+    state[key] = [];
+    const meta = MS_REGISTRY[key];
+    if (meta) {
+      document.getElementById(meta.rootId).querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+      updateMsButtonLabel(key);
+    }
+  });
+  state.search = '';
+  document.getElementById('f-search').value = '';
+  render();
+});
+
+document.querySelectorAll('.table-toggle[data-target]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t = document.getElementById(btn.dataset.target);
+    const showing = t.style.display !== 'none';
+    t.style.display = showing ? 'none' : 'block';
+    btn.textContent = showing ? 'ดูตาราง' : 'ซ่อนตาราง';
+  });
+});
+
+function getFiltered() {
+  return RAW_DATA.filter(r => {
+    if (state.region.length && !state.region.includes(r.region)) return false;
+    if (state.area.length && !state.area.includes(r.area)) return false;
+    if (state.type.length && !state.type.includes(r.type_shop)) return false;
+    if (state.size.length && !state.size.includes(r.size_shop)) return false;
+    if (state.focus.length && !state.focus.includes(r.focus_sf)) return false;
+    if (state.flag.length && !state.flag.includes(r.flag)) return false;
+    if (state.search) {
+      const hay = (String(r.shop_name) + ' ' + String(r.shop_code) + ' ' + String(r.code_tds)).toLowerCase();
+      if (!hay.includes(state.search)) return false;
+    }
+    return true;
+  });
+}
+
+/* ---------- tooltip ---------- */
+const tooltip = document.getElementById('tooltip');
+function showTooltip(evt, title, rows) {
+  tooltip.innerHTML = '';
+  const t = document.createElement('div'); t.className='tt-title'; t.textContent = title;
+  tooltip.appendChild(t);
+  rows.forEach(([label, val]) => {
+    const row = document.createElement('div'); row.className='tt-row';
+    const l = document.createElement('span'); l.textContent = label;
+    const v = document.createElement('span'); v.className='tt-val'; v.textContent = val;
+    row.appendChild(l); row.appendChild(v);
+    tooltip.appendChild(row);
+  });
+  tooltip.style.opacity = '1';
+  moveTooltip(evt);
+}
+function moveTooltip(evt) {
+  const pad = 14;
+  let x = evt.clientX + pad, y = evt.clientY + pad;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  if (x + 260 > vw) x = evt.clientX - 260 - pad;
+  if (y + 100 > vh) y = evt.clientY - 100 - pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+function hideTooltip() { tooltip.style.opacity = '0'; }
+
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+/* ---------- horizontal bar chart (single series, status colored) ---------- */
+function renderHBarChart(containerId, items, opts) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  if (items.length === 0) { container.innerHTML = '<div class="empty-state">ไม่มีข้อมูลตามตัวกรองที่เลือก</div>'; return; }
+
+  const rowH = opts.rowH || 26;
+  const gap = 8;
+  const leftLabelW = opts.leftLabelW || 190;
+  const rightValW = 56;
+  const width = 900;
+  const chartW = width - leftLabelW - rightValW - 10;
+  const height = items.length * (rowH + gap) + 20;
+  const maxVal = opts.maxVal || Math.max(...items.map(i => i.value), 1);
+
+  const svg = el('svg', { class: 'chart', viewBox: `0 0 ${width} ${height}`, role: 'img' });
+
+  const steps = opts.gridSteps || 4;
+  for (let s = 0; s <= steps; s++) {
+    const gx = leftLabelW + (chartW * s / steps);
+    svg.appendChild(el('line', { x1: gx, x2: gx, y1: 4, y2: height - 14, class: 'gridline' }));
+    const t = el('text', { x: gx, y: height - 2, class: 'axis-label', 'text-anchor': s === steps ? 'end' : 'middle' });
+    t.textContent = (maxVal * s / steps).toFixed(0) + (opts.suffix || '');
+    svg.appendChild(t);
+  }
+
+  items.forEach((item, i) => {
+    const y = 10 + i * (rowH + gap);
+    const barW = Math.max((item.value / maxVal) * chartW, item.value > 0 ? 3 : 0);
+    const color = opts.colorFn ? opts.colorFn(item) : 'var(--series-1)';
+
+    const label = el('text', { x: leftLabelW - 10, y: y + rowH/2 + 4, class: 'cat-label', 'text-anchor': 'end' });
+    label.textContent = item.label;
+    svg.appendChild(label);
+
+    const track = el('rect', { x: leftLabelW, y, width: chartW, height: rowH, fill: 'var(--gridline)', opacity: 0.25, rx: 4 });
+    svg.appendChild(track);
+
+    const bar = el('rect', {
+      x: leftLabelW, y, width: barW, height: rowH, rx: 4, fill: color,
+      style: 'cursor:pointer; transition: filter .1s;'
+    });
+    svg.appendChild(bar);
+
+    const valText = el('text', { x: leftLabelW + barW + 8, y: y + rowH/2 + 4, class: 'value-label' });
+    valText.textContent = opts.valueLabel ? opts.valueLabel(item) : item.value;
+    svg.appendChild(valText);
+
+    const hit = el('rect', { x: leftLabelW, y, width: chartW, height: rowH, fill: 'transparent', style: 'cursor:pointer;' });
+    hit.addEventListener('pointerenter', () => bar.style.filter = 'brightness(1.12)');
+    hit.addEventListener('pointerleave', () => { bar.style.filter=''; hideTooltip(); });
+    hit.addEventListener('pointermove', (evt) => {
+      showTooltip(evt, item.label, opts.tooltipRows ? opts.tooltipRows(item) : [['ค่า', String(item.value)]]);
+    });
+    svg.appendChild(hit);
+  });
+
+  container.appendChild(svg);
+}
+
+/* ---------- vertical bar chart (single or grouped) ---------- */
+function renderVBarChart(containerId, categories, series, opts) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  if (categories.length === 0) { container.innerHTML = '<div class="empty-state">ไม่มีข้อมูลตามตัวกรองที่เลือก</div>'; return; }
+
+  const width = opts.width || 560;
+  const height = 240;
+  const padL = 40, padR = 10, padT = 14, padB = 34;
+  const chartW = width - padL - padR;
+  const chartH = height - padT - padB;
+  const allVals = series.flatMap(s => s.values);
+  const maxVal = opts.maxVal || Math.max(...allVals, 1) * 1.15;
+
+  const svg = el('svg', { class: 'chart', viewBox: `0 0 ${width} ${height}` });
+
+  const steps = 4;
+  for (let s = 0; s <= steps; s++) {
+    const gy = padT + chartH - (chartH * s / steps);
+    svg.appendChild(el('line', { x1: padL, x2: width - padR, y1: gy, y2: gy, class: 'gridline' }));
+    const t = el('text', { x: padL - 6, y: gy + 3, class: 'axis-label', 'text-anchor': 'end' });
+    t.textContent = Math.round(maxVal * s / steps) + (opts.suffix || '');
+    svg.appendChild(t);
+  }
+  svg.appendChild(el('line', { x1: padL, x2: width - padR, y1: padT + chartH, y2: padT + chartH, class: 'baseline' }));
+
+  const groupW = chartW / categories.length;
+  const barGap = 3;
+  const barW = Math.min(24, (groupW - barGap * (series.length + 1)) / series.length);
+
+  categories.forEach((cat, ci) => {
+    const groupX = padL + ci * groupW;
+    series.forEach((s, si) => {
+      const val = s.values[ci];
+      const barH = (val / maxVal) * chartH;
+      const bx = groupX + barGap + si * (barW + barGap) + (groupW - (barW*series.length + barGap*(series.length+1)))/2;
+      const by = padT + chartH - barH;
+      const color = s.colorFn ? s.colorFn(val, cat) : (s.color || 'var(--series-1)');
+
+      const bar = el('rect', { x: bx, y: by, width: barW, height: Math.max(barH,0), rx: 4, fill: color, style: 'cursor:pointer; transition: filter .1s;' });
+      svg.appendChild(bar);
+
+      if (barH > 16) {
+        const vt = el('text', { x: bx + barW/2, y: by - 5, class: 'value-label', 'text-anchor': 'middle' });
+        vt.textContent = opts.valueLabel ? opts.valueLabel(val) : val;
+        svg.appendChild(vt);
+      }
+
+      const hit = el('rect', { x: bx - 1, y: padT, width: barW + 2, height: chartH, fill: 'transparent', style: 'cursor:pointer;' });
+      hit.addEventListener('pointerenter', () => bar.style.filter = 'brightness(1.12)');
+      hit.addEventListener('pointerleave', () => { bar.style.filter=''; hideTooltip(); });
+      hit.addEventListener('pointermove', (evt) => {
+        showTooltip(evt, cat, [[s.name, opts.valueLabel ? opts.valueLabel(val) : String(val)]]);
+      });
+      svg.appendChild(hit);
+    });
+
+    const lbl = el('text', { x: groupX + groupW/2, y: height - padB + 16, class: 'cat-label', 'text-anchor': 'middle' });
+    lbl.textContent = cat;
+    svg.appendChild(lbl);
+  });
+
+  container.appendChild(svg);
+}
+
+/* ---------- table helpers ---------- */
+function buildTable(wrapId, columns, rows, opts) {
+  const wrap = document.getElementById(wrapId);
+  wrap.innerHTML = '';
+  if (rows.length === 0) { wrap.innerHTML = '<div class="empty-state">ไม่มีข้อมูลตามตัวกรองที่เลือก</div>'; return; }
+
+  let sortCol = opts && opts.defaultSort ? opts.defaultSort : columns[0].key;
+  let sortDir = opts && opts.defaultDir ? opts.defaultDir : 1;
+
+  function draw() {
+    const sorted = [...rows].sort((a,b) => {
+      const av = a[sortCol], bv = b[sortCol];
+      if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sortDir;
+      return String(av).localeCompare(String(bv)) * sortDir;
+    });
+
+    const table = document.createElement('table');
+    table.className = 'data-table';
+    const thead = document.createElement('thead');
+    const htr = document.createElement('tr');
+    columns.forEach(col => {
+      const th = document.createElement('th');
+      th.textContent = col.label;
+      if (col.key === sortCol) { th.classList.add('sorted'); th.dataset.arrow = sortDir === 1 ? '▲' : '▼'; }
+      th.addEventListener('click', () => {
+        if (sortCol === col.key) sortDir *= -1; else { sortCol = col.key; sortDir = 1; }
+        draw();
+      });
+      htr.appendChild(th);
+    });
+    thead.appendChild(htr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    sorted.forEach(r => {
+      const tr = document.createElement('tr');
+      columns.forEach(col => {
+        const td = document.createElement('td');
+        if (col.render) { col.render(td, r[col.key], r); }
+        else { td.textContent = r[col.key]; }
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+
+    wrap.innerHTML = '';
+    wrap.appendChild(table);
+  }
+  draw();
+}
+
+function flagPill(td, flag) {
+  const span = document.createElement('span');
+  span.className = 'pill ' + (flag === 'Pass' ? 'pass' : 'notpass');
+  span.textContent = flag;
+  td.appendChild(span);
+}
+function focusPill(td, focus) {
+  const span = document.createElement('span');
+  span.className = 'pill ' + (focus === 'Y' ? 'pass' : 'na');
+  span.textContent = focus === 'Y' ? 'Focus' : 'ไม่ Focus';
+  td.appendChild(span);
+}
+
+/* ---------- legends ---------- */
+function buildLegend(containerId, items) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  items.forEach(it => {
+    const wrap = document.createElement('span'); wrap.className = 'legend-item';
+    const sw = document.createElement('span'); sw.className = 'legend-swatch'; sw.style.background = it.color;
+    const txt = document.createElement('span'); txt.textContent = it.label;
+    wrap.appendChild(sw); wrap.appendChild(txt);
+    c.appendChild(wrap);
+  });
+}
+function buildStatusLegend() {
+  buildLegend('statusLegend', [
+    { color: STATUS_COLOR.good, label: `สูงกว่าค่าเฉลี่ยรวม (>${OVERALL_AVG_PASS_RATE.toFixed(1)}%)` },
+    { color: STATUS_COLOR.warning, label: 'ต่ำกว่าค่าเฉลี่ยแต่ยังมีบ้าง (0–' + OVERALL_AVG_PASS_RATE.toFixed(1) + '%)' },
+    { color: STATUS_COLOR.critical, label: '0% (ยังไม่มีร้านผ่านเกณฑ์เลย)' },
+  ]);
+}
+buildLegend('trendLegend', [
+  { color: 'var(--series-1)', label: 'จำนวนร้านที่เสียบบัตร (สาขา)' },
+  { color: 'var(--series-5)', label: 'จำนวนครั้งที่เสียบบัตรรวม (ครั้ง)' },
+]);
+buildLegend('focusLegend', [
+  { color: STATUS_COLOR.good, label: 'Pass' },
+  { color: STATUS_COLOR.critical, label: 'Not Pass' },
+]);
+
+/* ---------- dynamic banner (reacts to filters) ---------- */
+const FILTER_LABELS = {
+  region: 'ภูมิภาค', area: 'พื้นที่', type: 'ประเภทร้าน', size: 'ขนาดร้าน', focus: 'Focus SF+', flag: 'สถานะ'
+};
+function activeFilterChips() {
+  const chips = [];
+  ['region','area','type','size','focus','flag'].forEach(key => {
+    if (state[key].length > 0) {
+      const meta = MS_REGISTRY[key];
+      const labelFn = meta ? meta.labelFn : (v => v);
+      const value = state[key].length <= 3
+        ? state[key].map(labelFn).join(', ')
+        : `${labelFn(state[key][0])} +${state[key].length - 1} รายการ`;
+      chips.push({ label: FILTER_LABELS[key], value });
+    }
+  });
+  if (state.search) chips.push({ label: 'ค้นหา', value: `"${state.search}"` });
+  return chips;
+}
+function renderBanner(data) {
+  const dyn = document.getElementById('bannerDynamic');
+  const bannerEl = document.getElementById('dataBanner');
+  const chips = activeFilterChips();
+  const total = data.length;
+  const passN = data.filter(r => r.flag === 'Pass').length;
+  const rate = pct(passN, total);
+  const status = total === 0 ? 'muted' : statusForRate(rate);
+  bannerEl.style.borderLeftColor = STATUS_COLOR[status];
+
+  dyn.innerHTML = '';
+
+  if (chips.length === 0) {
+    const allSpan = document.createElement('span');
+    allSpan.textContent = `ภาพรวมทุกสาขา (${RAW_DATA.length} สาขา) — `;
+    dyn.appendChild(allSpan);
+  } else {
+    const introSpan = document.createElement('span');
+    introSpan.textContent = 'กำลังกรอง: ';
+    dyn.appendChild(introSpan);
+    chips.forEach(c => {
+      const chip = document.createElement('span'); chip.className = 'chip';
+      const dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = 'var(--series-1)';
+      const txt = document.createElement('span'); txt.textContent = `${c.label}: ${c.value}`;
+      chip.appendChild(dot); chip.appendChild(txt);
+      dyn.appendChild(chip);
+    });
+    const arrow = document.createElement('span'); arrow.textContent = '→';
+    dyn.appendChild(arrow);
+  }
+
+  const insight = document.createElement('span');
+  if (total === 0) {
+    insight.textContent = 'ไม่พบสาขาที่ตรงกับตัวกรองนี้';
+  } else {
+    const rateSpan = `<span class="insight-rate" style="color:${STATUS_COLOR[status]}">${fmtPct(rate)}</span>`;
+    const cmp = rate > OVERALL_AVG_PASS_RATE ? 'สูงกว่า' : (rate < OVERALL_AVG_PASS_RATE ? 'ต่ำกว่า' : 'เท่ากับ');
+    insight.innerHTML = `${total.toLocaleString()} สาขา · ผ่านเกณฑ์ ${rateSpan} (${passN}/${total}) — ${cmp}ค่าเฉลี่ยรวมทั้งหมด (${OVERALL_AVG_PASS_RATE.toFixed(1)}%)`;
+  }
+  dyn.appendChild(insight);
+}
+
+/* ---------- main render ---------- */
+let LAST_FILTERED_DATA = [];
+function render() {
+  const data = getFiltered();
+  LAST_FILTERED_DATA = data;
+  document.getElementById('filterCount').textContent = `แสดง ${data.length} จาก ${RAW_DATA.length} สาขา`;
+
+  renderBanner(data);
+  renderStatTiles(data);
+  renderTrend(data);
+  renderDaysDist(data);
+  renderAreaChart(data);
+  renderRegionChart(data);
+  renderTypeChart(data);
+  renderSizeChart(data);
+  renderFocusChart(data);
+  renderCriticalTable(data);
+  renderPassTable(data);
+  renderAllTable(data);
+}
+
+function renderStatTiles(data) {
+  const total = data.length;
+  const passN = data.filter(r => r.flag === 'Pass').length;
+  const passRate = pct(passN, total);
+  const focusN = data.filter(r => r.focus_sf === 'Y').length;
+  const focusPassN = data.filter(r => r.focus_sf === 'Y' && r.flag === 'Pass').length;
+  const focusPassRate = pct(focusPassN, focusN);
+  const neverSwipedN = data.filter(neverSwiped).length;
+  const neverSwipedRate = pct(neverSwipedN, total);
+  const criticalRisk = data.filter(r => r.focus_sf === 'Y' && neverSwiped(r)).length;
+  const criticalRiskRate = pct(criticalRisk, focusN);
+
+  const tiles = [
+    { label: 'จำนวนสาขาทั้งหมด', value: total.toLocaleString(), delta: `ตามตัวกรองปัจจุบัน`, cls: '' },
+    { label: 'อัตราผ่านเกณฑ์รวม (Pass Rate)', value: fmtPct(passRate), delta: `${passN.toLocaleString()} จาก ${total.toLocaleString()} สาขา`, cls: passRate < 10 ? 'crit' : (passRate < 20 ? 'warn' : 'good') },
+    { label: 'สาขาที่เป็น Focus SF+', value: focusN.toLocaleString(), delta: `${fmtPct(pct(focusN,total))} ของสาขาทั้งหมด`, cls: '' },
+    { label: 'Pass Rate เฉพาะร้าน Focus', value: fmtPct(focusPassRate), delta: `${focusPassN.toLocaleString()} จาก ${focusN.toLocaleString()} สาขา`, cls: focusPassRate < 10 ? 'crit' : (focusPassRate < 20 ? 'warn':'good') },
+    { label: 'ยังไม่เสียบบัตรเลย', value: neverSwipedN.toLocaleString(), delta: `${fmtPct(neverSwipedRate)} ของสาขาทั้งหมด`, cls: neverSwipedRate > 40 ? 'crit' : 'warn' },
+    { label: 'Focus SF+ เสี่ยงสูง (0 วัน)', value: criticalRisk.toLocaleString(), delta: `${fmtPct(criticalRiskRate)} ของร้าน Focus`, cls: 'crit' },
+  ];
+
+  const grid = document.getElementById('statGrid');
+  grid.innerHTML = '';
+  tiles.forEach(t => {
+    const tile = document.createElement('div');
+    tile.className = 'stat-tile ' + t.cls;
+    const l = document.createElement('div'); l.className='label'; l.textContent = t.label;
+    const v = document.createElement('div'); v.className='value'; v.textContent = t.value;
+    const d = document.createElement('div'); d.className='delta'; d.textContent = t.delta;
+    tile.appendChild(l); tile.appendChild(v); tile.appendChild(d);
+    grid.appendChild(tile);
+  });
+}
+
+function renderTrend(data) {
+  if (AVAILABLE_DATES.length === 0) {
+    document.getElementById('trendChart').innerHTML = '<div class="empty-state">สัปดาห์นี้ยังไม่มีข้อมูลนำเข้า</div>';
+    document.getElementById('trendTable').innerHTML = '';
+    return;
+  }
+  const days = AVAILABLE_DATES.map(dateStr => ({
+    label: formatThaiDate(dateStr),
+    shops: data.filter(r => dayVal(r, dateStr) > 0).length,
+    events: data.reduce((s,r) => s + dayVal(r, dateStr), 0),
+  }));
+  renderVBarChart('trendChart', days.map(d=>d.label), [
+    { name: 'จำนวนร้านที่เสียบบัตร', color: 'var(--series-1)', values: days.map(d=>d.shops) },
+    { name: 'จำนวนครั้งที่เสียบบัตรรวม', color: 'var(--series-5)', values: days.map(d=>d.events) },
+  ], { width: Math.max(560, days.length * 130) });
+  buildTable('trendTable', [
+    { key: 'label', label: 'วัน' }, { key: 'shops', label: 'จำนวนร้านที่เสียบบัตร' }, { key: 'events', label: 'จำนวนครั้งรวม' }
+  ], days, { defaultSort: 'label' });
+}
+
+function renderDaysDist(data) {
+  if (AVAILABLE_DATES.length === 0) {
+    document.getElementById('daysChart').innerHTML = '<div class="empty-state">สัปดาห์นี้ยังไม่มีข้อมูลนำเข้า</div>';
+    document.getElementById('daysTable').innerHTML = '';
+    return;
+  }
+  const total = data.length || 1;
+  const nMax = AVAILABLE_DATES.length;
+  const passThreshold = 2;
+  const buckets = [];
+  for (let n = 0; n <= nMax; n++) {
+    const count = data.filter(r => r.days_swiped === n).length;
+    buckets.push({ label: n + ' วัน', value: count, rate: pct(count,total), n });
+  }
+  renderHBarChart('daysChart', buckets, {
+    rowH: 28, leftLabelW: 60,
+    colorFn: (item) => STATUS_COLOR[item.n === 0 ? 'critical' : (item.n >= passThreshold ? 'good' : 'warning')],
+    valueLabel: (item) => `${item.value} สาขา (${fmtPct(item.rate)})`,
+    tooltipRows: (item) => [['จำนวนสาขา', String(item.value)], ['สัดส่วน', fmtPct(item.rate)]],
+  });
+  buildTable('daysTable', [
+    { key: 'label', label: 'จำนวนวันที่เสียบบัตร' }, { key: 'value', label: 'จำนวนสาขา' },
+    { key: 'rate', label: 'สัดส่วน (%)', render: (td,val)=>td.textContent = fmtPct(val) }
+  ], buckets, { defaultSort: 'n' });
+}
+
+function groupPassRate(data, key) {
+  const groups = {};
+  data.forEach(r => {
+    const k = r[key];
+    if (!groups[k]) groups[k] = { total: 0, pass: 0 };
+    groups[k].total++;
+    if (r.flag === 'Pass') groups[k].pass++;
+  });
+  return Object.entries(groups).map(([label, g]) => ({
+    label, total: g.total, pass: g.pass, rate: pct(g.pass, g.total)
+  }));
+}
+
+function renderAreaChart(data) {
+  const rows = groupPassRate(data, 'area').sort((a,b) => b.rate - a.rate).map(r=>({...r,value:r.rate}));
+  renderHBarChart('areaChart', rows, {
+    rowH: 22, leftLabelW: 210, gridSteps: 4, suffix: '%', maxVal: Math.max(30, ...rows.map(r=>r.rate)),
+    colorFn: (item) => STATUS_COLOR[statusForRate(item.rate)],
+    valueLabel: (item) => fmtPct(item.rate),
+    tooltipRows: (item) => [['Pass Rate', fmtPct(item.rate)], ['ผ่านเกณฑ์', `${item.pass} / ${item.total} สาขา`]],
+  });
+  buildTable('areaTable', [
+    { key: 'label', label: 'พื้นที่ (Area)' }, { key: 'total', label: 'จำนวนสาขา' },
+    { key: 'pass', label: 'ผ่านเกณฑ์' }, { key: 'rate', label: 'Pass Rate (%)', render:(td,val)=>td.textContent=fmtPct(val) }
+  ], rows, { defaultSort: 'rate', defaultDir: -1 });
+}
+
+function renderRegionChart(data) {
+  const rows = groupPassRate(data, 'region').sort((a,b)=>b.rate-a.rate).map(r=>({...r,value:r.rate}));
+  renderHBarChart('regionChart', rows, {
+    rowH: 26, leftLabelW: 90, gridSteps: 4, suffix:'%', maxVal: Math.max(20, ...rows.map(r=>r.rate)),
+    colorFn: (item) => STATUS_COLOR[statusForRate(item.rate)],
+    valueLabel: (item) => fmtPct(item.rate),
+    tooltipRows: (item) => [['Pass Rate', fmtPct(item.rate)], ['ผ่านเกณฑ์', `${item.pass} / ${item.total} สาขา`]],
+  });
+  buildTable('regionTable', [
+    { key: 'label', label: 'ภูมิภาค' }, { key: 'total', label: 'จำนวนสาขา' },
+    { key: 'pass', label: 'ผ่านเกณฑ์' }, { key: 'rate', label: 'Pass Rate (%)', render:(td,val)=>td.textContent=fmtPct(val) }
+  ], rows, { defaultSort: 'rate', defaultDir: -1 });
+}
+
+function renderTypeChart(data) {
+  const rows = groupPassRate(data, 'type_shop').sort((a,b)=>b.rate-a.rate).map(r=>({...r,value:r.rate}));
+  const outOfScope = new Set(['COCO','Hall']);
+  renderHBarChart('typeChart', rows, {
+    rowH: 24, leftLabelW: 130, gridSteps: 4, suffix:'%', maxVal: Math.max(20, ...rows.map(r=>r.rate)),
+    colorFn: (item) => outOfScope.has(item.label) ? STATUS_COLOR.muted : STATUS_COLOR[statusForRate(item.rate)],
+    valueLabel: (item) => outOfScope.has(item.label) ? 'ไม่อยู่ใน scope' : fmtPct(item.rate),
+    tooltipRows: (item) => outOfScope.has(item.label)
+      ? [['หมายเหตุ', 'Focus SF+ = N ทั้งหมด'], ['จำนวนสาขา', String(item.total)]]
+      : [['Pass Rate', fmtPct(item.rate)], ['ผ่านเกณฑ์', `${item.pass} / ${item.total} สาขา`]],
+  });
+  buildTable('typeTable', [
+    { key: 'label', label: 'ประเภทร้าน' }, { key: 'total', label: 'จำนวนสาขา' },
+    { key: 'pass', label: 'ผ่านเกณฑ์' }, { key: 'rate', label: 'Pass Rate (%)', render:(td,val)=>td.textContent=fmtPct(val) }
+  ], rows, { defaultSort: 'rate', defaultDir: -1 });
+}
+
+function renderSizeChart(data) {
+  const order = { 'L':0, 'M':1, 'S':2 };
+  const rows = groupPassRate(data, 'size_shop').sort((a,b)=>(order[a.label]??9)-(order[b.label]??9)).map(r=>({...r,value:r.rate}));
+  renderHBarChart('sizeChart', rows, {
+    rowH: 26, leftLabelW: 70, gridSteps: 4, suffix:'%', maxVal: Math.max(20, ...rows.map(r=>r.rate)),
+    colorFn: (item) => STATUS_COLOR[statusForRate(item.rate)],
+    valueLabel: (item) => fmtPct(item.rate),
+    tooltipRows: (item) => [['Pass Rate', fmtPct(item.rate)], ['ผ่านเกณฑ์', `${item.pass} / ${item.total} สาขา`]],
+  });
+  buildTable('sizeTable', [
+    { key: 'label', label: 'ขนาดร้าน' }, { key: 'total', label: 'จำนวนสาขา' },
+    { key: 'pass', label: 'ผ่านเกณฑ์' }, { key: 'rate', label: 'Pass Rate (%)', render:(td,val)=>td.textContent=fmtPct(val) }
+  ], rows, { defaultSort: 'total', defaultDir: -1 });
+}
+
+function renderFocusChart(data) {
+  const cats = ['N', 'Y'];
+  const passVals = cats.map(c => data.filter(r=>r.focus_sf===c && r.flag==='Pass').length);
+  const notPassVals = cats.map(c => data.filter(r=>r.focus_sf===c && r.flag==='Not Pass').length);
+  renderVBarChart('focusChart', cats.map(c => c==='Y' ? 'Focus (Y)' : 'ไม่ Focus (N)'), [
+    { name: 'Pass', color: STATUS_COLOR.good, values: passVals },
+    { name: 'Not Pass', color: STATUS_COLOR.critical, values: notPassVals },
+  ], {});
+  const rows = cats.map((c,i) => ({ label: c==='Y'?'Focus (Y)':'ไม่ Focus (N)', pass: passVals[i], notpass: notPassVals[i], total: passVals[i]+notPassVals[i] }));
+  buildTable('focusTable', [
+    { key: 'label', label: 'กลุ่ม' }, { key: 'total', label: 'จำนวนสาขา' },
+    { key: 'pass', label: 'Pass' }, { key: 'notpass', label: 'Not Pass' }
+  ], rows, { defaultSort: 'label' });
+}
+
+function renderCriticalTable(data) {
+  const rows = data.filter(r => r.focus_sf === 'Y' && neverSwiped(r));
+  buildTable('criticalTableWrap', [
+    { key: 'shop_name', label: 'ชื่อร้าน' },
+    { key: 'shop_code', label: 'รหัสร้าน' },
+    { key: 'region', label: 'ภูมิภาค' },
+    { key: 'area', label: 'พื้นที่' },
+    { key: 'type_shop', label: 'ประเภท' },
+    { key: 'size_shop', label: 'ขนาด' },
+  ], rows, { defaultSort: 'area' });
+}
+
+function renderPassTable(data) {
+  const rows = data.filter(r => r.flag === 'Pass');
+  const dayCols = AVAILABLE_DATES.map(dateStr => ({
+    key: '__day_' + dateStr, label: formatThaiDateShort(dateStr),
+    render: (td, val, row) => { td.textContent = dayVal(row, dateStr); }
+  }));
+  buildTable('passTableWrap', [
+    { key: 'shop_name', label: 'ชื่อร้าน' },
+    { key: 'region', label: 'ภูมิภาค' },
+    { key: 'area', label: 'พื้นที่' },
+    { key: 'type_shop', label: 'ประเภท' },
+    { key: 'size_shop', label: 'ขนาด' },
+    ...dayCols,
+    { key: 'days_swiped', label: 'วันที่เสียบ' },
+  ], rows, { defaultSort: 'days_swiped', defaultDir: -1 });
+}
+
+function renderAllTable(data) {
+  const dayCols = AVAILABLE_DATES.map(dateStr => ({
+    key: '__day_' + dateStr, label: formatThaiDateShort(dateStr),
+    render: (td, val, row) => { td.textContent = dayVal(row, dateStr); }
+  }));
+  buildTable('allTableWrap', [
+    { key: 'shop_name', label: 'ชื่อร้าน' },
+    { key: 'region', label: 'ภูมิภาค' },
+    { key: 'area', label: 'พื้นที่' },
+    { key: 'type_shop', label: 'ประเภท' },
+    { key: 'size_shop', label: 'ขนาด' },
+    { key: 'focus_sf', label: 'Focus', render: focusPill },
+    ...dayCols,
+    { key: 'days_swiped', label: 'วันที่เสียบ' },
+    { key: 'flag', label: 'สถานะ', render: flagPill },
+  ], data, { defaultSort: 'shop_name' });
+}
+
+
+function extraCols() {
+  const w = CURRENT_WEEK, cols = [];
+  if (w.sell_dates && w.sell_dates.length) cols.push({ key: 'sellout', label: w.sell_dates.length < w.dates.length ? `Sell Out (เครื่อง, ${w.sell_dates.length} วัน)` : 'Sell Out (เครื่อง)' });
+  if (w.funnel_dates && w.funnel_dates.length) {
+    const tag = w.funnel_dates.map(d => formatThaiDateShort(d)).join(', ');
+    cols.push({ key: 'f_offer', label: `Offer Seen (${tag})` });
+    cols.push({ key: 'f_buy', label: `Purchase (${tag})` });
+  }
+  return cols;
+}
+let DL = null;
+(async () => {
+  try { DL = (window.claude && window.claude.use) ? await window.claude.use('downloads') : null; } catch (e) { DL = null; }
+  const inClaude = !!(window.claude && window.claude.use);
+  if (!DL && inClaude) ['exportCsvBtn', 'trendExportCsvBtn'].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = 'none'; });
+})();
+function saveCsv(filename, blob) {
+  if (!DL) {
+    const url = URL.createObjectURL(blob); const a = document.createElement('a');
+    a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 500); return;
+  }
+  DL.save({ filename, data: blob }).catch(e => { if (!e || e.code !== 'declined') console.warn('download failed', e); });
+}
+
+/* ---------- CSV export ---------- */
+function csvEscape(val) {
+  const s = val === null || val === undefined ? '' : String(val);
+  if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+function exportShopsToCsv() {
+  const dayCols = AVAILABLE_DATES.map(dateStr => ({ key: dateStr, label: formatThaiDateShort(dateStr) + ' ' + dateStr }));
+  const columns = [
+    { key: 'shop_name', label: 'ชื่อร้าน' },
+    { key: 'shop_code', label: 'รหัสร้าน (Shop Code)' },
+    { key: 'code_tds', label: 'CODE TDS' },
+    { key: 'region', label: 'ภูมิภาค' },
+    { key: 'area', label: 'พื้นที่' },
+    { key: 'type_shop', label: 'ประเภทร้าน' },
+    { key: 'size_shop', label: 'ขนาดร้าน' },
+    { key: 'focus_sf', label: 'Focus SF+' },
+    ...dayCols,
+    { key: 'days_swiped', label: 'จำนวนวันที่เสียบบัตร' },
+    { key: 'flag', label: 'สถานะ (Flag)' },
+    ...extraCols(),
+  ];
+
+  const rows = [...LAST_FILTERED_DATA].sort((a,b) => String(a.shop_name).localeCompare(String(b.shop_name)));
+
+  const lines = [];
+  lines.push(columns.map(c => csvEscape(c.label)).join(','));
+  rows.forEach(r => {
+    const line = columns.map(c => {
+      if (c.key === 'shop_name') return csvEscape(r.shop_name);
+      if (AVAILABLE_DATES.includes(c.key)) return csvEscape(dayVal(r, c.key));
+      return csvEscape(r[c.key]);
+    });
+    lines.push(line.join(','));
+  });
+
+  const csvContent = '﻿' + lines.join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const stamp = new Date().toISOString().slice(0,10);
+  saveCsv(`SFPlus_${CURRENT_WEEK.key}_shops_${stamp}.csv`, blob);
+}
+document.getElementById('exportCsvBtn').addEventListener('click', exportShopsToCsv);
+
+/* ==================== main tab navigation ==================== */
+function switchMainTab(tab) {
+  document.getElementById('mainTabBtnPerf').classList.toggle('active', tab === 'perf');
+  document.getElementById('mainTabBtnTrend').classList.toggle('active', tab === 'trend');
+  document.getElementById('tabPanelPerf').classList.toggle('active', tab === 'perf');
+  document.getElementById('tabPanelTrend').classList.toggle('active', tab === 'trend');
+}
+document.getElementById('mainTabBtnPerf').addEventListener('click', () => switchMainTab('perf'));
+document.getElementById('mainTabBtnTrend').addEventListener('click', () => switchMainTab('trend'));
+
+/* ==================== Trend Performance tab ==================== */
+
+const TREND_STATUSES = [
+  { key: 'Dead',     label: 'Dead',     color: 'var(--status-critical)', pillClass: 'trend-dead',
+    detail: 'ใน 4 สัปดาห์ที่ผ่านมา ไม่มีการเสียบบัตรเลย' },
+  { key: 'Severe',   label: 'Severe',   color: 'var(--status-serious)',  pillClass: 'trend-severe',
+    detail: 'ใน 4 สัปดาห์ที่ผ่านมา มีการเสียบบัตรน้อยกว่า 4 วัน' },
+  { key: 'Cautious', label: 'Cautious', color: 'var(--status-warning)',  pillClass: 'trend-cautious',
+    detail: 'ใน 4 สัปดาห์ที่ผ่านมา มีการเสียบบัตรมากกว่า 4 วัน แต่ไม่ได้เสียบทุกสัปดาห์' },
+  { key: 'Active',   label: 'Active',   color: 'var(--status-good)',     pillClass: 'trend-active',
+    detail: 'เสียบบัตรสัปดาห์ละ 2 วันหรือมากกว่า และเสียบต่อเนื่องทุกสัปดาห์' },
+];
+const TREND_STATUS_BY_KEY = Object.fromEntries(TREND_STATUSES.map((s, i) => [s.key, { ...s, order: i }]));
+
+function classifyTrend(weeklyDays) {
+  const total = weeklyDays.reduce((a, b) => a + b, 0);
+  if (total === 0) return 'Dead';
+  if (total < 4) return 'Severe';
+  if (weeklyDays.every(d => d >= 2)) return 'Active';
+  return 'Cautious';
+}
+
+/* a "window" = a target week plus the 3 weeks immediately before it (4 weeks total),
+   only offered once the target week itself has data imported */
+function computeTrendWindows() {
+  const out = [];
+  for (let i = 3; i < WEEKS.length; i++) {
+    const target = WEEKS[i];
+    if (target.available_dates.length === 0) continue;
+    out.push({ key: target.key, target, windowWeeks: WEEKS.slice(i - 3, i + 1) });
+  }
+  return out;
+}
+const TREND_WINDOWS = computeTrendWindows();
+function pickDefaultTrendWindow() { return TREND_WINDOWS.length ? TREND_WINDOWS[TREND_WINDOWS.length - 1] : null; }
+
+function buildTrendShops(win) {
+  const byCode = win.windowWeeks.map(w => {
+    const m = new Map(); w.records.forEach(r => m.set(r.shop_code, r)); return m;
+  });
+  return win.target.records.map(base => {
+    const weekly = byCode.map(m => { const r = m.get(base.shop_code); return r ? (r.days_swiped || 0) : 0; });
+    const total = weekly.reduce((a, b) => a + b, 0);
+    return {
+      shop_code: base.shop_code, code_tds: base.code_tds, shop_name: base.shop_name,
+      type_shop: base.type_shop, area: base.area, size_shop: base.size_shop,
+      region: base.region, focus_sf: base.focus_sf,
+      weekly, total, status: classifyTrend(weekly),
+    };
+  });
+}
+
+let CURRENT_TREND_WINDOW = null;
+let TREND_SHOPS = [];
+const trendState = { region: [], area: [], type: [], size: [], focus: [], search: '' };
+
+function trendMatchesFilters(r) {
+  if (trendState.region.length && !trendState.region.includes(r.region)) return false;
+  if (trendState.area.length && !trendState.area.includes(r.area)) return false;
+  if (trendState.type.length && !trendState.type.includes(r.type_shop)) return false;
+  if (trendState.size.length && !trendState.size.includes(r.size_shop)) return false;
+  if (trendState.focus.length && !trendState.focus.includes(r.focus_sf)) return false;
+  if (trendState.search) {
+    const hay = (String(r.shop_name) + ' ' + String(r.shop_code) + ' ' + String(r.code_tds)).toLowerCase();
+    if (!hay.includes(trendState.search)) return false;
+  }
+  return true;
+}
+function getFilteredTrend() { return TREND_SHOPS.filter(trendMatchesFilters); }
+
+/* ---- trend week tabs ---- */
+function buildTrendWeekTabs() {
+  const wrap = document.getElementById('trendWeekTabs');
+  wrap.innerHTML = '';
+  TREND_WINDOWS.forEach(win => {
+    const btn = document.createElement('button');
+    btn.className = 'week-tab' + (CURRENT_TREND_WINDOW && win.key === CURRENT_TREND_WINDOW.key ? ' active' : '');
+    const title = document.createElement('div'); title.className = 'wt-title'; title.textContent = win.key;
+    const sub = document.createElement('div'); sub.className = 'wt-sub';
+    sub.textContent = `${win.windowWeeks[0].key} – ${win.windowWeeks[3].key}`;
+    const tag = document.createElement('div'); tag.className = 'wt-tag has-data';
+    tag.textContent = 'ย้อนหลัง 4 สัปดาห์';
+    btn.appendChild(title); btn.appendChild(sub); btn.appendChild(tag);
+    btn.addEventListener('click', () => { if (!CURRENT_TREND_WINDOW || win.key !== CURRENT_TREND_WINDOW.key) switchTrendWindow(win.key); });
+    wrap.appendChild(btn);
+  });
+}
+
+/* ---- trend multi-select filters (mirrors buildMultiSelect, bound to trendState) ---- */
+const TREND_MS_REGISTRY = {};
+function buildTrendMultiSelect(rootId, key, values, allLabel, labelFn) {
+  TREND_MS_REGISTRY[key] = { rootId, allLabel, labelFn, values };
+  const root = document.getElementById(rootId);
+  root.innerHTML = ''; root.classList.remove('open');
+
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'ms-button';
+  const btnLabel = document.createElement('span'); btnLabel.className = 'ms-btn-label';
+  const badge = document.createElement('span'); badge.className = 'ms-count-badge'; badge.style.display = 'none';
+  const caret = document.createElement('span'); caret.className = 'ms-caret'; caret.textContent = '▾';
+  btn.appendChild(btnLabel); btn.appendChild(badge); btn.appendChild(caret);
+
+  const panel = document.createElement('div'); panel.className = 'ms-panel';
+  const actions = document.createElement('div'); actions.className = 'ms-panel-actions';
+  const selectAllBtn = document.createElement('button'); selectAllBtn.type = 'button'; selectAllBtn.textContent = 'เลือกทั้งหมด';
+  const clearBtn = document.createElement('button'); clearBtn.type = 'button'; clearBtn.textContent = 'ล้าง';
+  actions.appendChild(selectAllBtn); actions.appendChild(clearBtn);
+  const options = document.createElement('div'); options.className = 'ms-options';
+
+  values.forEach(v => {
+    const opt = document.createElement('label'); opt.className = 'ms-option';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.value = v;
+    cb.checked = trendState[key].includes(v);
+    cb.addEventListener('change', () => {
+      const arr = trendState[key];
+      if (cb.checked) { if (!arr.includes(v)) arr.push(v); }
+      else { const i = arr.indexOf(v); if (i > -1) arr.splice(i, 1); }
+      updateTrendMsButtonLabel(key);
+      renderTrendPage();
+    });
+    const txt = document.createElement('span'); txt.className = 'ms-opt-label'; txt.textContent = labelFn(v);
+    opt.appendChild(cb); opt.appendChild(txt);
+    options.appendChild(opt);
+  });
+
+  selectAllBtn.addEventListener('click', () => {
+    trendState[key] = [...values];
+    options.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true);
+    updateTrendMsButtonLabel(key); renderTrendPage();
+  });
+  clearBtn.addEventListener('click', () => {
+    trendState[key] = [];
+    options.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+    updateTrendMsButtonLabel(key); renderTrendPage();
+  });
+
+  panel.appendChild(actions); panel.appendChild(options);
+  panel.addEventListener('click', e => e.stopPropagation());
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const isOpen = root.classList.contains('open');
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+    if (!isOpen) root.classList.add('open');
+  });
+
+  root.appendChild(btn); root.appendChild(panel);
+  updateTrendMsButtonLabel(key);
+}
+function updateTrendMsButtonLabel(key) {
+  const meta = TREND_MS_REGISTRY[key];
+  if (!meta) return;
+  const root = document.getElementById(meta.rootId);
+  const btnLabel = root.querySelector('.ms-btn-label');
+  const badge = root.querySelector('.ms-count-badge');
+  const selected = trendState[key];
+  if (selected.length === 0) { btnLabel.textContent = meta.allLabel; badge.style.display = 'none'; }
+  else if (selected.length <= 2) { btnLabel.textContent = selected.map(meta.labelFn).join(', '); badge.style.display = 'none'; }
+  else { btnLabel.textContent = meta.labelFn(selected[0]) + ' …'; badge.style.display = 'inline-block'; badge.textContent = selected.length; }
+}
+
+document.getElementById('tf-search').addEventListener('input', e => {
+  trendState.search = e.target.value.trim().toLowerCase();
+  renderTrendPage();
+});
+document.getElementById('trendResetFilters').addEventListener('click', () => {
+  ['region', 'area', 'type', 'size', 'focus'].forEach(key => {
+    trendState[key] = [];
+    const meta = TREND_MS_REGISTRY[key];
+    if (meta) {
+      document.getElementById(meta.rootId).querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+      updateTrendMsButtonLabel(key);
+    }
+  });
+  trendState.search = '';
+  document.getElementById('tf-search').value = '';
+  renderTrendPage();
+});
+
+function switchTrendWindow(key) {
+  CURRENT_TREND_WINDOW = TREND_WINDOWS.find(w => w.key === key) || null;
+  if (!CURRENT_TREND_WINDOW) return;
+  TREND_SHOPS = buildTrendShops(CURRENT_TREND_WINDOW);
+
+  trendState.region = []; trendState.area = []; trendState.type = []; trendState.size = []; trendState.focus = []; trendState.search = '';
+  document.getElementById('tf-search').value = '';
+
+  buildTrendMultiSelect('tf-region', 'region', uniqueSorted(TREND_SHOPS, 'region'), 'ทุกภูมิภาค', v => v);
+  buildTrendMultiSelect('tf-area', 'area', uniqueSorted(TREND_SHOPS, 'area'), 'ทุกพื้นที่', v => v);
+  buildTrendMultiSelect('tf-type', 'type', uniqueSorted(TREND_SHOPS, 'type_shop'), 'ทุกประเภทร้าน', v => v);
+  buildTrendMultiSelect('tf-size', 'size', uniqueSorted(TREND_SHOPS, 'size_shop'), 'ทุกขนาด', v => v);
+  buildTrendMultiSelect('tf-focus', 'focus', ['Y', 'N'], 'ทุกสถานะ Focus', v => v === 'Y' ? 'Focus (Y)' : 'ไม่ Focus (N)');
+
+  const w = CURRENT_TREND_WINDOW;
+  const winLabel = `${w.windowWeeks[0].key} – ${w.windowWeeks[3].key}`;
+  document.getElementById('trendInfoBox').innerHTML =
+    `<b>ตัวอย่างการคำนวณของ ${w.key}</b> (คือ ${winLabel}) — นับจำนวนวันที่เสียบบัตรของแต่ละสาขาสะสมใน 4 สัปดาห์ล่าสุด `
+    + `(${w.windowWeeks.map(x => x.key).join(', ')}) แล้วจัดสถานะดังนี้:`
+    + `<br>• <b>Dead</b> — 4 สัปดาห์ที่ผ่านมา ไม่มีการเสียบบัตรเลย`
+    + `<br>• <b>Severe</b> — 4 สัปดาห์ที่ผ่านมา มีการเสียบบัตรน้อยกว่า 4 วัน`
+    + `<br>• <b>Cautious</b> — 4 สัปดาห์ที่ผ่านมา มีการเสียบบัตรมากกว่า 4 วัน แต่ไม่ได้เสียบทุกสัปดาห์`
+    + `<br>• <b>Active</b> — เสียบบัตรสัปดาห์ละ 2 วันหรือมากกว่า และเสียบต่อเนื่องทุกสัปดาห์`;
+
+  buildTrendWeekTabs();
+  renderTrendPage();
+}
+
+/* ---- rendering ---- */
+function buildTrendStatusLegend() {
+  buildLegend('trendStatusLegend', TREND_STATUSES.map(s => ({ color: s.color, label: s.label })));
+}
+
+function renderTrendBanner(data) {
+  const dyn = document.getElementById('trendBannerDynamic');
+  const bannerEl = document.getElementById('trendBanner');
+  const FILTER_LABELS_T = { region: 'ภูมิภาค', area: 'พื้นที่', type: 'ประเภทร้าน', size: 'ขนาดร้าน', focus: 'Focus SF+' };
+  const chips = [];
+  ['region', 'area', 'type', 'size', 'focus'].forEach(key => {
+    if (trendState[key].length > 0) {
+      const meta = TREND_MS_REGISTRY[key];
+      const labelFn = meta ? meta.labelFn : (v => v);
+      const value = trendState[key].length <= 3
+        ? trendState[key].map(labelFn).join(', ')
+        : `${labelFn(trendState[key][0])} +${trendState[key].length - 1} รายการ`;
+      chips.push({ label: FILTER_LABELS_T[key], value });
+    }
+  });
+  if (trendState.search) chips.push({ label: 'ค้นหา', value: `"${trendState.search}"` });
+
+  dyn.innerHTML = '';
+  if (chips.length === 0) {
+    const s = document.createElement('span'); s.textContent = `ภาพรวมทุกสาขา (${TREND_SHOPS.length} สาขา) — `;
+    dyn.appendChild(s);
+  } else {
+    const s = document.createElement('span'); s.textContent = 'กำลังกรอง: '; dyn.appendChild(s);
+    chips.forEach(c => {
+      const chip = document.createElement('span'); chip.className = 'chip';
+      const dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = 'var(--series-1)';
+      const txt = document.createElement('span'); txt.textContent = `${c.label}: ${c.value}`;
+      chip.appendChild(dot); chip.appendChild(txt); dyn.appendChild(chip);
+    });
+    const arrow = document.createElement('span'); arrow.textContent = '→'; dyn.appendChild(arrow);
+  }
+
+  const total = data.length;
+  const activeN = data.filter(r => r.status === 'Active').length;
+  const deadN = data.filter(r => r.status === 'Dead').length;
+  const activeRate = pct(activeN, total);
+  const status = total === 0 ? 'muted' : (activeRate >= 50 ? 'good' : (activeRate >= 25 ? 'warning' : 'critical'));
+  bannerEl.style.borderLeftColor = STATUS_COLOR[status];
+
+  const insight = document.createElement('span');
+  if (total === 0) insight.textContent = 'ไม่พบสาขาที่ตรงกับตัวกรองนี้';
+  else insight.innerHTML = `${total.toLocaleString()} สาขา · Active <span class="insight-rate" style="color:${STATUS_COLOR.good}">${fmtPct(activeRate)}</span> (${activeN}/${total}) · Dead ${deadN.toLocaleString()} สาขา`;
+  dyn.appendChild(insight);
+
+  document.getElementById('trendBannerStatic').innerHTML =
+    `คำนวณจากข้อมูลย้อนหลัง 4 สัปดาห์ (<b>${CURRENT_TREND_WINDOW.windowWeeks.map(w => w.key).join(' → ')}</b>) ณ สัปดาห์ <b>${CURRENT_TREND_WINDOW.key}</b>`;
+}
+
+function renderTrendStatTiles(data) {
+  const total = data.length;
+  const grid = document.getElementById('trendStatGrid');
+  grid.innerHTML = '';
+  TREND_STATUSES.forEach(s => {
+    const n = data.filter(r => r.status === s.key).length;
+    const rate = pct(n, total);
+    const tile = document.createElement('div');
+    tile.className = 'stat-tile';
+    tile.style.borderTop = `3px solid ${s.color}`;
+    const l = document.createElement('div'); l.className = 'label'; l.textContent = s.label;
+    const v = document.createElement('div'); v.className = 'value'; v.style.color = s.color; v.textContent = n.toLocaleString();
+    const d = document.createElement('div'); d.className = 'delta'; d.textContent = `${fmtPct(rate)} ของสาขาทั้งหมด (${total.toLocaleString()})`;
+    tile.appendChild(l); tile.appendChild(v); tile.appendChild(d);
+    grid.appendChild(tile);
+  });
+}
+
+function renderTrendCharts(data) {
+  const total = data.length || 1;
+  const rows = TREND_STATUSES.map(s => {
+    const n = data.filter(r => r.status === s.key).length;
+    return { label: s.label, key: s.key, value: n, rate: pct(n, total), color: s.color };
+  });
+  renderHBarChart('trendStatusChart', rows, {
+    rowH: 30, leftLabelW: 90, gridSteps: 4,
+    maxVal: Math.max(1, ...rows.map(r => r.value)),
+    colorFn: item => item.color,
+    valueLabel: item => `${item.value} สาขา (${fmtPct(item.rate)})`,
+    tooltipRows: item => [['จำนวนสาขา', String(item.value)], ['สัดส่วน', fmtPct(item.rate)]],
+  });
+  buildTable('trendStatusChartTable', [
+    { key: 'label', label: 'Status' }, { key: 'value', label: 'จำนวนสาขา' },
+    { key: 'rate', label: 'สัดส่วน (%)', render: (td, val) => td.textContent = fmtPct(val) },
+  ], rows, { defaultSort: 'value', defaultDir: -1 });
+
+  renderHBarChart('trendStatusPctChart', rows.map(r => ({ ...r, value: r.rate })), {
+    rowH: 30, leftLabelW: 90, gridSteps: 4, suffix: '%', maxVal: 100,
+    colorFn: item => item.color,
+    valueLabel: item => fmtPct(item.value),
+    tooltipRows: item => [['สัดส่วน', fmtPct(item.value)], ['จำนวนสาขา', String(data.filter(r => r.status === item.key).length)]],
+  });
+}
+
+function computeTrendCountsForWindow(win) {
+  const shops = buildTrendShops(win).filter(trendMatchesFilters);
+  const total = shops.length;
+  const counts = {};
+  TREND_STATUSES.forEach(s => { counts[s.key] = shops.filter(r => r.status === s.key).length; });
+  return { total, counts };
+}
+
+function renderTrendSummaryTables() {
+  if (TREND_WINDOWS.length === 0) {
+    document.getElementById('trendCountTableWrap').innerHTML = '<div class="empty-state">ยังไม่มีข้อมูลเพียงพอสำหรับคำนวณ Trend Performance (ต้องมีข้อมูลสัปดาห์ต่อเนื่องอย่างน้อย 4 สัปดาห์)</div>';
+    document.getElementById('trendPctTableWrap').innerHTML = '';
+    return;
+  }
+  const windowStats = TREND_WINDOWS.map(w => ({ win: w, ...computeTrendCountsForWindow(w) }));
+
+  const countCols = [
+    { key: 'label', label: 'สถานะ' },
+    { key: 'detail', label: 'รายละเอียด' },
+    ...windowStats.map(ws => ({
+      key: 'n_' + ws.win.key, label: ws.win.key,
+      render: (td, val) => { td.textContent = val.toLocaleString() + ' สาขา'; },
+    })),
+  ];
+  const countRows = TREND_STATUSES.map((s, i) => {
+    const row = { label: s.label, detail: s.detail, __order: i };
+    windowStats.forEach(ws => { row['n_' + ws.win.key] = ws.counts[s.key]; });
+    return row;
+  });
+  buildTable('trendCountTableWrap', countCols, countRows, { defaultSort: '__order', defaultDir: 1 });
+
+  const pctCols = [
+    { key: 'label', label: 'สถานะ' },
+    { key: 'detail', label: 'รายละเอียด' },
+    ...windowStats.map(ws => ({
+      key: 'p_' + ws.win.key, label: ws.win.key,
+      render: (td, val) => { td.textContent = fmtPct(val); },
+    })),
+  ];
+  const pctRows = TREND_STATUSES.map((s, i) => {
+    const row = { label: s.label, detail: s.detail, __order: i };
+    windowStats.forEach(ws => { row['p_' + ws.win.key] = pct(ws.counts[s.key], ws.total); });
+    return row;
+  });
+  buildTable('trendPctTableWrap', pctCols, pctRows, { defaultSort: '__order', defaultDir: 1 });
+}
+
+function renderTrendDetailTable(data) {
+  const dayCols = CURRENT_TREND_WINDOW.windowWeeks.map((w, idx) => ({
+    key: '__w_' + idx, label: w.key,
+    render: (td, val, row) => { td.textContent = row.weekly[idx]; },
+  }));
+  const cols = [
+    { key: 'shop_name', label: 'ชื่อร้าน' },
+    { key: 'region', label: 'ภูมิภาค' },
+    { key: 'area', label: 'พื้นที่' },
+    { key: 'type_shop', label: 'ประเภท' },
+    { key: 'size_shop', label: 'ขนาด' },
+    { key: 'focus_sf', label: 'Focus', render: focusPill },
+    ...dayCols,
+    { key: 'total', label: 'รวม (วัน)' },
+    {
+      key: 'status', label: 'Trend Status', render: (td, val) => {
+        const s = TREND_STATUS_BY_KEY[val];
+        const span = document.createElement('span');
+        span.className = 'pill ' + s.pillClass;
+        span.textContent = s.label;
+        td.appendChild(span);
+      },
+    },
+  ];
+  buildTable('trendDetailTableWrap', cols, data, { defaultSort: 'total', defaultDir: 1 });
+}
+
+function renderTrendPage() {
+  if (!CURRENT_TREND_WINDOW) return;
+  const data = getFilteredTrend();
+  document.getElementById('trendFilterCount').textContent = `แสดง ${data.length} จาก ${TREND_SHOPS.length} สาขา`;
+
+  renderTrendBanner(data);
+  renderTrendStatTiles(data);
+  renderTrendCharts(data);
+  renderTrendSummaryTables();
+  renderTrendDetailTable(data);
+
+  document.getElementById('trendDetailCardSub').textContent =
+    `สถานะ ณ สัปดาห์ ${CURRENT_TREND_WINDOW.key} (ย้อนหลัง 4 สัปดาห์: ${CURRENT_TREND_WINDOW.windowWeeks.map(w => w.key).join(', ')}) — ปรับตามตัวกรองด้านบน`;
+  document.getElementById('trendDashFooter').textContent =
+    `Trend Performance คำนวณจากข้อมูล ${CURRENT_TREND_WINDOW.windowWeeks.map(w => w.key).join(', ')} · จำนวนสาขาทั้งหมด ${TREND_SHOPS.length} สาขา · จัดทำเพื่อการวิเคราะห์ภายในเท่านั้น`;
+}
+
+/* ---- trend CSV export ---- */
+function exportTrendToCsv() {
+  if (!CURRENT_TREND_WINDOW) return;
+  const dayCols = CURRENT_TREND_WINDOW.windowWeeks.map((w, idx) => ({ key: '__w_' + idx, label: w.key }));
+  const columns = [
+    { key: 'shop_name', label: 'ชื่อร้าน' },
+    { key: 'shop_code', label: 'รหัสร้าน (Shop Code)' },
+    { key: 'code_tds', label: 'CODE TDS' },
+    { key: 'region', label: 'ภูมิภาค' },
+    { key: 'area', label: 'พื้นที่' },
+    { key: 'type_shop', label: 'ประเภทร้าน' },
+    { key: 'size_shop', label: 'ขนาดร้าน' },
+    { key: 'focus_sf', label: 'Focus SF+' },
+    ...dayCols,
+    { key: 'total', label: 'จำนวนวันที่เสียบบัตรรวม (4 สัปดาห์)' },
+    { key: 'status', label: 'Trend Status' },
+  ];
+  const rows = [...getFilteredTrend()].sort((a, b) => String(a.shop_name).localeCompare(String(b.shop_name)));
+  const lines = [];
+  lines.push(columns.map(c => csvEscape(c.label)).join(','));
+  rows.forEach(r => {
+    const line = columns.map(c => {
+      if (c.key.startsWith('__w_')) { const idx = Number(c.key.slice(4)); return csvEscape(r.weekly[idx]); }
+      return csvEscape(r[c.key]);
+    });
+    lines.push(line.join(','));
+  });
+  const csvContent = '﻿' + lines.join('\r\n');
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const stamp = new Date().toISOString().slice(0, 10);
+  saveCsv(`SFPlus_Trend_${CURRENT_TREND_WINDOW.key}_${stamp}.csv`, blob);
+}
+document.getElementById('trendExportCsvBtn').addEventListener('click', exportTrendToCsv);
+
+/* ---------- init ---------- */
+switchWeek(pickDefaultWeekKey());
+
+buildTrendStatusLegend();
+const __defTrendWindow = pickDefaultTrendWindow();
+if (__defTrendWindow) {
+  switchTrendWindow(__defTrendWindow.key);
+} else {
+  document.getElementById('trendInfoBox').innerHTML =
+    'ยังไม่มีข้อมูลเพียงพอสำหรับคำนวณ Trend Performance (ต้องมีข้อมูลสัปดาห์ที่นำเข้าแล้วต่อเนื่องอย่างน้อย 4 สัปดาห์)';
+  renderTrendSummaryTables();
+}
+
+</script>
+</body>
+</html>
