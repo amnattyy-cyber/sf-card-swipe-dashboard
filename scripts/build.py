@@ -82,27 +82,65 @@ def read_format(path):
 SELL_HIST = os.path.join(ROOT, 'history', 'sellout_daily.json')
 
 
+def _model_labels(df, prefix_map):
+    """Model name (series + capacity) and series for every row.  Rows without a
+    DESCRIPTION get their series from other rows with the same Model Code prefix."""
+    parts = df['DESCRIPTION'].fillna('').astype(str).str.split(',')
+    fam = parts.str[2].fillna('').str.strip()
+    cap = parts.str[4].fillna('').str.strip()
+    pre = df['Model Code'].fillna('').astype(str).str[:7]
+    for p_, f_ in zip(pre[fam != ''], fam[fam != '']):
+        prefix_map.setdefault(p_, f_)
+    missing = fam == ''
+    fam = fam.where(~missing, pre.map(prefix_map).fillna(df['Model Code'].fillna('ไม่ระบุรุ่น').astype(str)))
+    model = (fam + ' ' + cap).str.strip().where(~missing, fam + ' (ไม่ระบุความจุ)')
+    return model, fam
+
+
 def read_sellout():
-    """Sell out units per shop per day.  Raw CSVs (which contain IMEIs) are reduced to
-    shop/day counts, merged into history/sellout_daily.json, and then deleted."""
-    hist = json.load(open(SELL_HIST, encoding='utf-8')) if os.path.exists(SELL_HIST) else {}
+    """Sell out units per shop per day per model.  Raw CSVs (which contain IMEIs) are
+    reduced to counts, merged into history/sellout_daily.json, and then deleted.
+    History format: {"v": 2, "days": {date: {shop: {model: qty}}}, "family": {model: series},
+                     "prefix": {model_code_prefix: series}}"""
+    raw = json.load(open(SELL_HIST, encoding='utf-8')) if os.path.exists(SELL_HIST) else {}
+    if raw.get('v') != 2:  # old format: {date: {shop: qty}}
+        raw = {'v': 2, 'days': {d: {sc: {'ไม่ระบุรุ่น': q} for sc, q in shops.items()} for d, shops in raw.items()},
+               'family': {'ไม่ระบุรุ่น': 'ไม่ระบุรุ่น'}, 'prefix': {}}
     files = find('sellout')
     if files:
         df = pd.concat([pd.read_csv(f, encoding='utf-8-sig', dtype={'Mobile_IMEI': str}) for f in files])
         # the report can list one device (IMEI) several times under different product codes
         df = df.dropna(subset=['Mobile_IMEI']).drop_duplicates(subset=['Mobile_IMEI'], keep='last')
         df['d'] = pd.to_datetime(df['Financed_Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
+        df['model'], df['family'] = _model_labels(df, raw['prefix'])
         new = {}
-        for (sc, d), q in df.groupby(['Partner Code', 'd'])['QTY SF+'].sum().items():
-            new.setdefault(d, {})[str(int(sc))] = int(q)
-        hist.update(new)  # dates in the new file replace older counts for those dates
-        json.dump(hist, open(SELL_HIST, 'w', encoding='utf-8'), separators=(',', ':'), sort_keys=True)
+        for (sc, d, mo), q in df.groupby(['Partner Code', 'd', 'model'])['QTY SF+'].sum().items():
+            new.setdefault(d, {}).setdefault(str(int(sc)), {})[mo] = int(q)
+        raw['days'].update(new)  # dates in the new file replace older counts for those dates
+        raw['family'].update(dict(zip(df['model'], df['family'])))
+        json.dump(raw, open(SELL_HIST, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'), sort_keys=True)
         for f in files:
             os.remove(f)
-    if not hist:
-        return {}, (None, None)
-    sell = {(int(sc), d): q for d, shops in hist.items() for sc, q in shops.items()}
-    return sell, (min(hist), max(hist))
+    days = raw['days']
+    if not days:
+        return {}, (None, None), None
+    sell = {}
+    for d, shops in days.items():
+        for sc, models in shops.items():
+            sell[(int(sc), d)] = sum(models.values())
+    return sell, (min(days), max(days)), raw
+
+
+def sellout_payload(raw, master):
+    """Compact model-level rows for the 'Sell Out by Model' tab (master shops only)."""
+    if not raw:
+        return {'models': [], 'family': [], 'rows': [], 'range': [None, None]}
+    models = sorted({mo for shops in raw['days'].values() for ms in shops.values() for mo in ms})
+    idx = {m: i for i, m in enumerate(models)}
+    rows = [[d, int(sc), idx[mo], q] for d, shops in sorted(raw['days'].items())
+            for sc, ms in shops.items() if int(sc) in master for mo, q in ms.items()]
+    return {'models': models, 'family': [raw['family'].get(m, m) for m in models], 'rows': rows,
+            'range': [min(raw['days']), max(raw['days'])]}
 
 
 def read_funnel():
@@ -216,7 +254,7 @@ def main():
 
     # master = shops of the latest week; drop shops not in master
     master = {r['shop_code'] for r in weeks[with_data[-1]]['records']}
-    sell, (smin, smax) = read_sellout()
+    sell, (smin, smax), sell_raw = read_sellout()
     fun, fdates = read_funnel()
 
     out = []
@@ -234,6 +272,7 @@ def main():
 
     html = open(TEMPLATE, encoding='utf-8').read()
     html = html.replace('/*__WEEKS__*/', json.dumps(out, ensure_ascii=False, separators=(',', ':')))
+    html = html.replace('/*__SELLOUT__*/', json.dumps(sellout_payload(sell_raw, master), ensure_ascii=False, separators=(',', ':')))
     open(OUT, 'w', encoding='utf-8').write(html)
 
     # keep every week that has data for future builds

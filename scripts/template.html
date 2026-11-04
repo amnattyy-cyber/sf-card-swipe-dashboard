@@ -330,6 +330,7 @@
   <div class="main-tabs" id="mainTabs">
     <button class="main-tab-btn active" id="mainTabBtnPerf" type="button">Performance by Week</button>
     <button class="main-tab-btn" id="mainTabBtnTrend" type="button">Trend Performance</button>
+    <button class="main-tab-btn" id="mainTabBtnModel" type="button">Sell Out by Model</button>
   </div>
 
   <div class="tab-panel active" id="tabPanelPerf">
@@ -602,6 +603,102 @@
     </div>
 
     <footer class="dash-footer" id="trendDashFooter"></footer>
+
+  </div>
+  <div class="tab-panel" id="tabPanelModel">
+
+    <div class="week-tabs" id="mWeekTabs"></div>
+
+    <div class="banner" id="mBanner">
+      <div class="banner-dynamic" id="mBannerDynamic"></div>
+      <div class="banner-static" id="mBannerStatic"></div>
+    </div>
+
+    <div class="filters" id="mFilters">
+      <div class="filter-field"><label>ภูมิภาค (Region)</label><div class="ms-dropdown" id="mf-region"></div></div>
+      <div class="filter-field"><label>พื้นที่ (Area)</label><div class="ms-dropdown" id="mf-area"></div></div>
+      <div class="filter-field"><label>ประเภทร้าน (Type Shop)</label><div class="ms-dropdown" id="mf-type"></div></div>
+      <div class="filter-field"><label>ขนาดร้าน (Size)</label><div class="ms-dropdown" id="mf-size"></div></div>
+      <div class="filter-field"><label>Focus SF+</label><div class="ms-dropdown" id="mf-focus"></div></div>
+      <div class="filter-field"><label>กลุ่มรุ่น (Series)</label><div class="ms-dropdown" id="mf-series"></div></div>
+      <div class="filter-field"><label for="mf-search">ค้นหาชื่อ/รหัสร้าน</label><input type="text" id="mf-search" placeholder="พิมพ์ชื่อร้านหรือรหัส..."></div>
+      <button class="reset-btn" id="mResetFilters">ล้างตัวกรอง</button>
+      <div class="filter-count" id="mFilterCount"></div>
+    </div>
+
+    <div class="stat-grid" id="mStatGrid"></div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Ranking ยอดขาย SF+ ตามรุ่น (Top 15)</h2>
+          <p class="card-sub" id="mRankSub">จำนวนเครื่อง · % ส่วนแบ่ง · ▲▼ = อันดับเปลี่ยนจากสัปดาห์ก่อน</p>
+        </div>
+        <button class="table-toggle" data-target="mRankChartTable">ดูตาราง</button>
+      </div>
+      <div class="legend" id="mSeriesLegend"></div>
+      <div id="mRankChart"></div>
+      <div class="table-wrap" id="mRankChartTable" style="display:none;"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>สัดส่วนยอดขายตามกลุ่มรุ่น (Series)</h2>
+            <p class="card-sub">Galaxy A / S / Z / Tab</p>
+          </div>
+          <button class="table-toggle" data-target="mSeriesTable">ดูตาราง</button>
+        </div>
+        <div id="mSeriesChart"></div>
+        <div class="table-wrap" id="mSeriesTable" style="display:none;"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h2>แนวโน้มรายสัปดาห์ของ Top 5 รุ่น</h2>
+            <p class="card-sub" id="mTrendSub">จำนวนเครื่องต่อสัปดาห์ (สัปดาห์ที่ข้อมูลไม่ครบแสดงตามจำนวนวันที่มี)</p>
+          </div>
+          <button class="table-toggle" data-target="mTrendTable">ดูตาราง</button>
+        </div>
+        <div class="legend" id="mTrendLegend"></div>
+        <div id="mTrendChart"></div>
+        <div class="table-wrap" id="mTrendTable" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Top 5 รุ่น แยกตามภูมิภาค (Region)</h2>
+          <p class="card-sub">อันดับรุ่นขายดีในแต่ละภูมิภาค · จำนวนเครื่อง (% ของภูมิภาค)</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="mRegionTableWrap"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>ตาราง Ranking ทุกรุ่น</h2>
+          <p class="card-sub" id="mAllSub">เรียงตามยอดขาย · คลิกหัวคอลัมน์เพื่อเรียงใหม่ · ปรับตามตัวกรองด้านบน</p>
+        </div>
+        <button class="table-toggle" id="mExportCsvBtn">⬇ Export CSV</button>
+      </div>
+      <div class="table-wrap" id="mAllTableWrap" style="max-height:520px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div>
+          <h2>Ranking ตามรุ่นย่อย (ความจุ)</h2>
+          <p class="card-sub">แยกตามรุ่นและความจุ (รวมทุกสี)</p>
+        </div>
+      </div>
+      <div class="table-wrap" id="mSubTableWrap" style="max-height:520px;"></div>
+    </div>
+
+    <footer class="dash-footer" id="mDashFooter"></footer>
 
   </div>
 </div>
@@ -1454,7 +1551,7 @@ let DL = null;
 (async () => {
   try { DL = (window.claude && window.claude.use) ? await window.claude.use('downloads') : null; } catch (e) { DL = null; }
   const inClaude = !!(window.claude && window.claude.use);
-  if (!DL && inClaude) ['exportCsvBtn', 'trendExportCsvBtn'].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = 'none'; });
+  if (!DL && inClaude) ['exportCsvBtn', 'trendExportCsvBtn', 'mExportCsvBtn'].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = 'none'; });
 })();
 function saveCsv(filename, blob) {
   if (!DL) {
@@ -1514,7 +1611,10 @@ function switchMainTab(tab) {
   document.getElementById('mainTabBtnTrend').classList.toggle('active', tab === 'trend');
   document.getElementById('tabPanelPerf').classList.toggle('active', tab === 'perf');
   document.getElementById('tabPanelTrend').classList.toggle('active', tab === 'trend');
+  document.getElementById('mainTabBtnModel').classList.toggle('active', tab === 'model');
+  document.getElementById('tabPanelModel').classList.toggle('active', tab === 'model');
 }
+document.getElementById('mainTabBtnModel').addEventListener('click', () => switchMainTab('model'));
 document.getElementById('mainTabBtnPerf').addEventListener('click', () => switchMainTab('perf'));
 document.getElementById('mainTabBtnTrend').addEventListener('click', () => switchMainTab('trend'));
 
@@ -1958,6 +2058,345 @@ if (__defTrendWindow) {
     'ยังไม่มีข้อมูลเพียงพอสำหรับคำนวณ Trend Performance (ต้องมีข้อมูลสัปดาห์ที่นำเข้าแล้วต่อเนื่องอย่างน้อย 4 สัปดาห์)';
   renderTrendSummaryTables();
 }
+
+/* ==================== Sell Out by Model tab ==================== */
+const SELLOUT = /*__SELLOUT__*/;
+const M_LATEST = WEEKS.filter(w => w.available_dates.length).slice(-1)[0] || WEEKS[WEEKS.length - 1];
+const M_SHOPS = new Map(M_LATEST.records.map(r => [r.shop_code, r]));
+const M_SERIES = [
+  { key: 'Galaxy A',   color: 'var(--series-1)', test: f => /^GALAXY A/.test(f) },
+  { key: 'Galaxy S',   color: 'var(--series-6)', test: f => /^GALAXY S/.test(f) },
+  { key: 'Galaxy Z',   color: 'var(--series-3)', test: f => /^GALAXY Z/.test(f) },
+  { key: 'Galaxy Tab', color: 'var(--series-7)', test: f => /^GALAXY TAB/.test(f) },
+];
+function mSeriesOf(fam) { const s = M_SERIES.find(x => x.test(fam)); return s ? s.key : 'อื่น ๆ'; }
+function mSeriesColor(key) { const s = M_SERIES.find(x => x.key === key); return s ? s.color : 'var(--status-muted)'; }
+function mPretty(fam) { return String(fam).replace(/^GALAXY /, 'Galaxy ').replace(/^Galaxy TAB /, 'Galaxy Tab ').replace(/ULT\b/, ' Ultra').replace(/FE\b/, ' FE').replace(/\s+/g, ' ').trim(); }
+const M_FAMILY = SELLOUT.family;
+const M_SERIES_OF = M_FAMILY.map(mSeriesOf);
+
+/* periods = weeks with sell out data (+ all) */
+const M_PERIODS = (() => {
+  const [smin, smax] = SELLOUT.range || [null, null];
+  if (!smin) return [];
+  const list = WEEKS.map(w => ({ key: w.key, dates: w.dates, avail: w.dates.filter(d => d >= smin && d <= smax) }))
+    .filter(p => p.avail.length);
+  const allDates = [...new Set(SELLOUT.rows.map(r => r[0]))].sort();
+  const firstWeekStart = list.length ? list[0].avail[0] : smin;
+  list.push({ key: 'ALL', title: 'รวมทุกสัปดาห์', dates: allDates.filter(d => d >= firstWeekStart), avail: allDates.filter(d => d >= firstWeekStart) });
+  return list;
+})();
+let M_PERIOD = M_PERIODS.filter(p => p.key !== 'ALL').slice(-1)[0] || M_PERIODS[0];
+const mState = { region: [], area: [], type: [], size: [], focus: [], series: [], search: '' };
+const M_MS = {};
+
+function mBuildMS(rootId, key, values, allLabel, labelFn) {
+  M_MS[key] = { rootId, allLabel, labelFn };
+  const root = document.getElementById(rootId); root.innerHTML = '';
+  const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'ms-button';
+  btn.innerHTML = '<span class="ms-btn-label"></span><span class="ms-count-badge" style="display:none"></span><span class="ms-caret">▾</span>';
+  const panel = document.createElement('div'); panel.className = 'ms-panel';
+  const actions = document.createElement('div'); actions.className = 'ms-panel-actions';
+  const allB = document.createElement('button'); allB.type = 'button'; allB.textContent = 'เลือกทั้งหมด';
+  const clrB = document.createElement('button'); clrB.type = 'button'; clrB.textContent = 'ล้าง';
+  actions.appendChild(allB); actions.appendChild(clrB);
+  const opts = document.createElement('div'); opts.className = 'ms-options';
+  values.forEach(v => {
+    const o = document.createElement('label'); o.className = 'ms-option';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = mState[key].includes(v);
+    cb.addEventListener('change', () => {
+      const a = mState[key];
+      if (cb.checked) { if (!a.includes(v)) a.push(v); } else { const i = a.indexOf(v); if (i > -1) a.splice(i, 1); }
+      mUpdateMsLabel(key); renderModelPage();
+    });
+    const t = document.createElement('span'); t.className = 'ms-opt-label'; t.textContent = labelFn(v);
+    o.appendChild(cb); o.appendChild(t); opts.appendChild(o);
+  });
+  allB.addEventListener('click', () => { mState[key] = [...values]; opts.querySelectorAll('input').forEach(c => c.checked = true); mUpdateMsLabel(key); renderModelPage(); });
+  clrB.addEventListener('click', () => { mState[key] = []; opts.querySelectorAll('input').forEach(c => c.checked = false); mUpdateMsLabel(key); renderModelPage(); });
+  panel.appendChild(actions); panel.appendChild(opts);
+  panel.addEventListener('click', e => e.stopPropagation());
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    const open = root.classList.contains('open');
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+    if (!open) root.classList.add('open');
+  });
+  root.appendChild(btn); root.appendChild(panel);
+  mUpdateMsLabel(key);
+}
+function mUpdateMsLabel(key) {
+  const m = M_MS[key]; const root = document.getElementById(m.rootId);
+  const lab = root.querySelector('.ms-btn-label'), badge = root.querySelector('.ms-count-badge');
+  const sel = mState[key];
+  if (!sel.length) { lab.textContent = m.allLabel; badge.style.display = 'none'; }
+  else if (sel.length <= 2) { lab.textContent = sel.map(m.labelFn).join(', '); badge.style.display = 'none'; }
+  else { lab.textContent = m.labelFn(sel[0]) + ' …'; badge.style.display = 'inline-block'; badge.textContent = sel.length; }
+}
+function mBuildFilters() {
+  const recs = M_LATEST.records;
+  mBuildMS('mf-region', 'region', uniqueSorted(recs, 'region'), 'ทุกภูมิภาค', v => v);
+  mBuildMS('mf-area', 'area', uniqueSorted(recs, 'area'), 'ทุกพื้นที่', v => v);
+  mBuildMS('mf-type', 'type', uniqueSorted(recs, 'type_shop'), 'ทุกประเภทร้าน', v => v);
+  mBuildMS('mf-size', 'size', uniqueSorted(recs, 'size_shop'), 'ทุกขนาด', v => v);
+  mBuildMS('mf-focus', 'focus', ['Y', 'N'], 'ทุกสถานะ Focus', v => v === 'Y' ? 'Focus (Y)' : 'ไม่ Focus (N)');
+  const series = [...M_SERIES.map(s => s.key), 'อื่น ๆ'].filter(s => M_SERIES_OF.includes(s));
+  mBuildMS('mf-series', 'series', series, 'ทุกกลุ่มรุ่น', v => v);
+}
+document.getElementById('mf-search').addEventListener('input', e => { mState.search = e.target.value.trim().toLowerCase(); renderModelPage(); });
+document.getElementById('mResetFilters').addEventListener('click', () => {
+  Object.keys(mState).forEach(k => mState[k] = k === 'search' ? '' : []);
+  document.getElementById('mf-search').value = '';
+  mBuildFilters(); renderModelPage();
+});
+
+function mShopOk(sc) {
+  const r = M_SHOPS.get(sc); if (!r) return false;
+  if (mState.region.length && !mState.region.includes(r.region)) return false;
+  if (mState.area.length && !mState.area.includes(r.area)) return false;
+  if (mState.type.length && !mState.type.includes(r.type_shop)) return false;
+  if (mState.size.length && !mState.size.includes(r.size_shop)) return false;
+  if (mState.focus.length && !mState.focus.includes(r.focus_sf)) return false;
+  if (mState.search) {
+    const hay = `${r.shop_name} ${r.shop_code} ${r.code_tds}`.toLowerCase();
+    if (!hay.includes(mState.search)) return false;
+  }
+  return true;
+}
+function mRows(dates) {
+  const ds = new Set(dates);
+  return SELLOUT.rows.filter(([d, sc, mi]) => ds.has(d) && mShopOk(sc) && (!mState.series.length || mState.series.includes(M_SERIES_OF[mi])));
+}
+/* aggregate by family -> {fam, units, shops:Set, subs:Map(model->units)} */
+function mAggFamily(rows) {
+  const m = new Map();
+  rows.forEach(([d, sc, mi, q]) => {
+    const fam = M_FAMILY[mi];
+    if (!m.has(fam)) m.set(fam, { fam, units: 0, shops: new Set(), subs: new Map() });
+    const g = m.get(fam); g.units += q; g.shops.add(sc);
+    g.subs.set(mi, (g.subs.get(mi) || 0) + q);
+  });
+  const arr = [...m.values()].sort((a, b) => b.units - a.units || a.fam.localeCompare(b.fam));
+  arr.forEach((g, i) => g.rank = i + 1);
+  return arr;
+}
+function mPrevPeriod() {
+  if (M_PERIOD.key === 'ALL') return null;
+  const i = M_PERIODS.indexOf(M_PERIOD);
+  return i > 0 && M_PERIODS[i - 1].key !== 'ALL' ? M_PERIODS[i - 1] : null;
+}
+function mRankDelta(g, prevMap) {
+  const p = prevMap && prevMap.get(g.fam);
+  if (!prevMap) return { txt: '', cls: '' };
+  if (!p) return { txt: 'ใหม่', cls: 'new' };
+  const d = p.rank - g.rank;
+  return d > 0 ? { txt: `▲${d}`, cls: 'up' } : d < 0 ? { txt: `▼${-d}`, cls: 'down' } : { txt: '–', cls: 'same' };
+}
+
+function buildModelWeekTabs() {
+  const wrap = document.getElementById('mWeekTabs'); wrap.innerHTML = '';
+  M_PERIODS.forEach(p => {
+    const units = SELLOUT.rows.filter(r => p.avail.includes(r[0]) && M_SHOPS.has(r[1])).reduce((s, r) => s + r[3], 0);
+    const btn = document.createElement('button');
+    btn.className = 'week-tab' + (p.key === M_PERIOD.key ? ' active' : '');
+    const t = document.createElement('div'); t.className = 'wt-title'; t.textContent = p.key === 'ALL' ? p.title : p.key;
+    const sub = document.createElement('div'); sub.className = 'wt-sub';
+    sub.textContent = `${formatThaiDateShort(p.avail[0])} – ${formatThaiDateShort(p.avail[p.avail.length - 1])} · ${units.toLocaleString()} เครื่อง`;
+    const tag = document.createElement('div');
+    const full = p.key === 'ALL' || p.avail.length === 7;
+    tag.className = 'wt-tag ' + (full ? 'has-data' : 'no-data');
+    tag.textContent = p.key === 'ALL' ? `${p.avail.length} วัน` : (full ? 'ข้อมูลครบ 7/7 วัน' : `มีข้อมูล ${p.avail.length}/7 วัน`);
+    btn.appendChild(t); btn.appendChild(sub); btn.appendChild(tag);
+    btn.addEventListener('click', () => { if (p.key !== M_PERIOD.key) { M_PERIOD = p; buildModelWeekTabs(); renderModelPage(); } });
+    wrap.appendChild(btn);
+  });
+}
+
+let M_LAST_RANK = [];
+function renderModelPage() {
+  if (!M_PERIOD) {
+    document.getElementById('mBannerDynamic').textContent = 'ยังไม่มีข้อมูล Sell Out — อัปโหลดไฟล์ Report Sell Out SF+ ในโฟลเดอร์ data/';
+    return;
+  }
+  const rows = mRows(M_PERIOD.avail);
+  const ranks = mAggFamily(rows);
+  const prev = mPrevPeriod();
+  const prevRanks = prev ? mAggFamily(mRows(prev.avail)) : null;
+  const prevMap = prevRanks ? new Map(prevRanks.map(g => [g.fam, g])) : null;
+  const total = ranks.reduce((s, g) => s + g.units, 0);
+  const prevTotal = prevRanks ? prevRanks.reduce((s, g) => s + g.units, 0) : 0;
+  const shopsSelling = new Set(rows.map(r => r[1])).size;
+  const shopsInScope = [...M_SHOPS.keys()].filter(mShopOk).length;
+  M_LAST_RANK = ranks.map(g => {
+    const p = prevMap && prevMap.get(g.fam);
+    const perDay = g.units / M_PERIOD.avail.length, prevPerDay = p ? p.units / prev.avail.length : null;
+    return {
+      rank: g.rank, fam: g.fam, label: mPretty(g.fam), series: mSeriesOf(g.fam), units: g.units,
+      share: pct(g.units, total), shops: g.shops.size,
+      prevUnits: p ? p.units : (prev ? 0 : null), prevRank: p ? p.rank : null,
+      chg: (p && prevPerDay) ? pct(perDay - prevPerDay, prevPerDay) : null,
+      delta: mRankDelta(g, prevMap), subs: g.subs,
+    };
+  });
+  document.getElementById('mFilterCount').textContent = `แสดง ${shopsInScope} จาก ${M_SHOPS.size} สาขา`;
+
+  /* banner */
+  const dyn = document.getElementById('mBannerDynamic'); dyn.innerHTML = '';
+  const chips = [];
+  const lbl = { region: 'ภูมิภาค', area: 'พื้นที่', type: 'ประเภทร้าน', size: 'ขนาดร้าน', focus: 'Focus SF+', series: 'กลุ่มรุ่น' };
+  Object.keys(lbl).forEach(k => { if (mState[k].length) chips.push(`${lbl[k]}: ${mState[k].length <= 3 ? mState[k].map(M_MS[k].labelFn).join(', ') : M_MS[k].labelFn(mState[k][0]) + ' +' + (mState[k].length - 1)}`); });
+  if (mState.search) chips.push(`ค้นหา: "${mState.search}"`);
+  if (!chips.length) { const s = document.createElement('span'); s.textContent = `ภาพรวมทุกสาขา (${M_SHOPS.size} สาขา) — `; dyn.appendChild(s); }
+  else {
+    const s = document.createElement('span'); s.textContent = 'กำลังกรอง: '; dyn.appendChild(s);
+    chips.forEach(c => { const ch = document.createElement('span'); ch.className = 'chip'; ch.innerHTML = '<span class="dot" style="background:var(--series-1)"></span>'; const t = document.createElement('span'); t.textContent = c; ch.appendChild(t); dyn.appendChild(ch); });
+    const a = document.createElement('span'); a.textContent = '→'; dyn.appendChild(a);
+  }
+  const ins = document.createElement('span');
+  if (!total) ins.textContent = 'ไม่มียอดขายตามตัวกรองนี้';
+  else {
+    const top = M_LAST_RANK[0];
+    ins.innerHTML = `ยอดขาย ${total.toLocaleString()} เครื่อง · ${M_LAST_RANK.length} รุ่น · อันดับ 1 <span class="insight-rate" style="color:${mSeriesColor(top.series)}">${top.label}</span> ${top.units.toLocaleString()} เครื่อง (${fmtPct(top.share)})`;
+  }
+  dyn.appendChild(ins);
+  document.getElementById('mBanner').style.borderLeftColor = 'var(--series-1)';
+  const range = `${formatThaiDate(M_PERIOD.avail[0])} – ${formatThaiDate(M_PERIOD.avail[M_PERIOD.avail.length - 1])}`;
+  document.getElementById('mBannerStatic').innerHTML = M_PERIOD.key === 'ALL'
+    ? `<b>ช่วงข้อมูล:</b> ${range} (${M_PERIOD.avail.length} วัน) · นับจาก Financed Date ในไฟล์ Sell Out · 1 IMEI = 1 เครื่อง`
+    : `<b>สัปดาห์ ${M_PERIOD.key}:</b> ${range} (${M_PERIOD.avail.length}/7 วัน) · นับจาก Financed Date ในไฟล์ Sell Out · 1 IMEI = 1 เครื่อง`
+      + (prev ? ` · อันดับ ▲▼ เทียบ ${prev.key}${M_PERIOD.avail.length < 7 || prev.avail.length < 7 ? ' (% เปลี่ยนแปลงใช้ค่าเฉลี่ยต่อวัน)' : ''}` : '');
+
+  /* stat tiles */
+  const perDay = total / M_PERIOD.avail.length, prevPerDay = prev ? prevTotal / prev.avail.length : null;
+  const chg = prevPerDay ? pct(perDay - prevPerDay, prevPerDay) : null;
+  const top5 = M_LAST_RANK.slice(0, 5).reduce((s, g) => s + g.units, 0);
+  const seriesTot = {}; M_LAST_RANK.forEach(g => seriesTot[g.series] = (seriesTot[g.series] || 0) + g.units);
+  const topSeries = Object.entries(seriesTot).sort((a, b) => b[1] - a[1])[0];
+  const riser = M_LAST_RANK.filter(g => g.delta.cls === 'up').sort((a, b) => (a.rank - a.prevRank) - (b.rank - b.prevRank))[0];
+  const tiles = [
+    { label: 'ยอดขาย SF+ รวม (เครื่อง)', value: total.toLocaleString(), delta: chg == null ? `${M_PERIOD.avail.length} วันที่มีข้อมูล` : `${chg >= 0 ? '▲' : '▼'} ${Math.abs(chg).toFixed(1)}% เทียบ ${prev.key} (เฉลี่ย/วัน)`, cls: chg == null ? '' : (chg >= 0 ? 'good' : 'crit') },
+    { label: 'เฉลี่ยต่อวัน', value: perDay.toFixed(1), delta: prev ? `${prev.key}: ${prevPerDay.toFixed(1)} เครื่อง/วัน` : 'เครื่อง/วัน', cls: '' },
+    { label: 'จำนวนรุ่นที่ขายได้', value: M_LAST_RANK.length.toLocaleString(), delta: `จากร้านที่มียอดขาย ${shopsSelling} สาขา`, cls: '' },
+    { label: 'รุ่นขายดีอันดับ 1', value: M_LAST_RANK[0] ? M_LAST_RANK[0].label.replace('Galaxy ', '') : '–', delta: M_LAST_RANK[0] ? `${M_LAST_RANK[0].units.toLocaleString()} เครื่อง (${fmtPct(M_LAST_RANK[0].share)})` : '', cls: 'good' },
+    { label: 'ส่วนแบ่ง Top 5 รุ่น', value: fmtPct(pct(top5, total)), delta: topSeries ? `กลุ่ม ${topSeries[0]} ${fmtPct(pct(topSeries[1], total))}` : '', cls: '' },
+    { label: 'อันดับขยับขึ้นมากสุด', value: riser ? riser.label.replace('Galaxy ', '') : '–', delta: riser ? `อันดับ ${riser.prevRank} → ${riser.rank}` : (prev ? 'ไม่มีรุ่นที่อันดับขยับขึ้น' : 'ไม่มีสัปดาห์ก่อนให้เทียบ'), cls: riser ? 'good' : '' },
+  ];
+  const grid = document.getElementById('mStatGrid'); grid.innerHTML = '';
+  tiles.forEach(t => {
+    const tile = document.createElement('div'); tile.className = 'stat-tile ' + t.cls;
+    const l = document.createElement('div'); l.className = 'label'; l.textContent = t.label;
+    const v = document.createElement('div'); v.className = 'value'; v.textContent = t.value;
+    const d = document.createElement('div'); d.className = 'delta'; d.textContent = t.delta;
+    tile.appendChild(l); tile.appendChild(v); tile.appendChild(d); grid.appendChild(tile);
+  });
+
+  /* ranking chart */
+  const top15 = M_LAST_RANK.slice(0, 15).map(g => ({ ...g, value: g.units, label: `${g.rank}. ${g.label}` }));
+  document.getElementById('mRankSub').textContent = prev
+    ? `จำนวนเครื่อง · % ส่วนแบ่ง · ▲▼ = อันดับเปลี่ยนจาก ${prev.key}` : 'จำนวนเครื่อง · % ส่วนแบ่ง';
+  renderHBarChart('mRankChart', top15, {
+    rowH: 22, leftLabelW: 210, gridSteps: 4, maxVal: Math.max(1, ...top15.map(g => g.units)) * 1.3,
+    colorFn: g => mSeriesColor(g.series),
+    valueLabel: g => `${g.units.toLocaleString()} (${fmtPct(g.share)})${g.delta.txt && g.delta.txt !== '–' ? '  ' + g.delta.txt : ''}`,
+    tooltipRows: g => {
+      const subs = [...g.subs.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4)
+        .map(([mi, q]) => ['· ' + (SELLOUT.models[mi].replace(g.fam, '').trim() || 'ไม่ระบุ'), q.toLocaleString()]);
+      const r = [['ยอดขาย', `${g.units.toLocaleString()} เครื่อง`], ['ส่วนแบ่ง', fmtPct(g.share)], ['ร้านที่ขายได้', `${g.shops} สาขา`]];
+      if (prev) r.push([`${prev.key}`, g.prevUnits == null ? '–' : `${g.prevUnits.toLocaleString()} (อันดับ ${g.prevRank || '–'})`]);
+      return r.concat(subs);
+    },
+  });
+  const rankCols = [
+    { key: 'rank', label: 'อันดับ' }, { key: 'label', label: 'รุ่น' }, { key: 'series', label: 'กลุ่ม' },
+    { key: 'units', label: 'เครื่อง' }, { key: 'share', label: '% ส่วนแบ่ง', render: (td, v) => td.textContent = fmtPct(v) },
+    { key: 'shops', label: 'ร้านที่ขายได้' },
+  ];
+  if (prev) rankCols.push(
+    { key: 'prevUnits', label: prev.key },
+    { key: 'chg', label: '% เปลี่ยน (เฉลี่ย/วัน)', render: (td, v) => { if (v == null) { td.textContent = '–'; return; } td.textContent = `${v >= 0 ? '+' : ''}${v.toFixed(1)}%`; td.style.color = v >= 0 ? 'var(--status-good)' : 'var(--status-critical)'; } },
+    { key: 'prevRank', label: `อันดับ ${prev.key}`, render: (td, v) => td.textContent = v == null ? '–' : v },
+    { key: 'delta', label: 'อันดับเปลี่ยน', render: (td, v) => { td.textContent = v.txt; td.style.color = v.cls === 'up' || v.cls === 'new' ? 'var(--status-good)' : v.cls === 'down' ? 'var(--status-critical)' : 'var(--text-muted)'; td.style.fontWeight = '700'; } },
+  );
+  buildTable('mRankChartTable', rankCols, M_LAST_RANK.slice(0, 15), { defaultSort: 'rank' });
+  buildTable('mAllTableWrap', rankCols, M_LAST_RANK, { defaultSort: 'rank' });
+  document.getElementById('mAllSub').textContent = `${M_LAST_RANK.length} รุ่น · เรียงตามยอดขาย · คลิกหัวคอลัมน์เพื่อเรียงใหม่ · ปรับตามตัวกรองด้านบน`;
+
+  /* series share */
+  const seriesRows = Object.entries(seriesTot).map(([k, v]) => ({ label: k, value: v, share: pct(v, total), models: M_LAST_RANK.filter(g => g.series === k).length }))
+    .sort((a, b) => b.value - a.value);
+  renderHBarChart('mSeriesChart', seriesRows, {
+    rowH: 28, leftLabelW: 100, gridSteps: 4, maxVal: Math.max(1, ...seriesRows.map(r => r.value)) * 1.3,
+    colorFn: r => mSeriesColor(r.label),
+    valueLabel: r => `${r.value.toLocaleString()} (${fmtPct(r.share)})`,
+    tooltipRows: r => [['ยอดขาย', `${r.value.toLocaleString()} เครื่อง`], ['ส่วนแบ่ง', fmtPct(r.share)], ['จำนวนรุ่น', String(r.models)]],
+  });
+  buildTable('mSeriesTable', [
+    { key: 'label', label: 'กลุ่มรุ่น' }, { key: 'models', label: 'จำนวนรุ่น' }, { key: 'value', label: 'เครื่อง' },
+    { key: 'share', label: '% ส่วนแบ่ง', render: (td, v) => td.textContent = fmtPct(v) },
+  ], seriesRows, { defaultSort: 'value', defaultDir: -1 });
+
+  /* weekly trend of top 5 (always across weeks) */
+  const weeks = M_PERIODS.filter(p => p.key !== 'ALL');
+  const top5f = M_LAST_RANK.slice(0, 5);
+  const palette = ['var(--series-1)', 'var(--series-6)', 'var(--series-2)', 'var(--series-3)', 'var(--series-7)'];
+  const weekly = weeks.map(w => { const a = mAggFamily(mRows(w.avail)); return new Map(a.map(g => [g.fam, g.units])); });
+  buildLegend('mTrendLegend', top5f.map((g, i) => ({ color: palette[i], label: g.label })));
+  renderVBarChart('mTrendChart', weeks.map(w => w.key + (w.avail.length < 7 ? ` (${w.avail.length}d)` : '')),
+    top5f.map((g, i) => ({ name: g.label, color: palette[i], values: weekly.map(m => m.get(g.fam) || 0) })), { width: Math.max(560, weeks.length * 110) });
+  const trendRows = top5f.map(g => { const o = { label: g.label }; weeks.forEach((w, i) => o['w' + i] = weekly[i].get(g.fam) || 0); return o; });
+  buildTable('mTrendTable', [{ key: 'label', label: 'รุ่น' }, ...weeks.map((w, i) => ({ key: 'w' + i, label: w.key }))], trendRows, { defaultSort: 'label' });
+
+  /* top 5 by region */
+  const regions = uniqueSorted(M_LATEST.records, 'region');
+  const regRows = [];
+  for (let i = 0; i < 5; i++) {
+    const o = { rank: i + 1 };
+    regions.forEach(rg => {
+      const rr = rows.filter(r => M_SHOPS.get(r[1]).region === rg);
+      const a = mAggFamily(rr), t = rr.reduce((s, r) => s + r[3], 0);
+      o[rg] = a[i] ? `${mPretty(a[i].fam)} · ${a[i].units} (${fmtPct(pct(a[i].units, t))})` : '–';
+    });
+    regRows.push(o);
+  }
+  buildTable('mRegionTableWrap', [{ key: 'rank', label: 'อันดับ' }, ...regions.map(rg => ({ key: rg, label: rg }))], regRows, { defaultSort: 'rank' });
+
+  /* sub-model ranking */
+  const subMap = new Map();
+  rows.forEach(([d, sc, mi, q]) => {
+    if (!subMap.has(mi)) subMap.set(mi, { units: 0, shops: new Set() });
+    const s = subMap.get(mi); s.units += q; s.shops.add(sc);
+  });
+  const subRows = [...subMap.entries()].map(([mi, s]) => ({
+    model: SELLOUT.models[mi].replace(/^GALAXY /, 'Galaxy '), fam: mPretty(M_FAMILY[mi]), series: M_SERIES_OF[mi],
+    units: s.units, share: pct(s.units, total), shops: s.shops.size,
+  })).sort((a, b) => b.units - a.units).map((r, i) => ({ rank: i + 1, ...r }));
+  buildTable('mSubTableWrap', [
+    { key: 'rank', label: 'อันดับ' }, { key: 'model', label: 'รุ่น / ความจุ' }, { key: 'fam', label: 'รุ่นหลัก' }, { key: 'series', label: 'กลุ่ม' },
+    { key: 'units', label: 'เครื่อง' }, { key: 'share', label: '% ส่วนแบ่ง', render: (td, v) => td.textContent = fmtPct(v) }, { key: 'shops', label: 'ร้านที่ขายได้' },
+  ], subRows, { defaultSort: 'rank' });
+
+  document.getElementById('mDashFooter').textContent =
+    `สร้างจากไฟล์ Report Sell Out SF+ (ข้อมูล ${formatThaiDate(SELLOUT.range[0])} – ${formatThaiDate(SELLOUT.range[1])}) · เฉพาะร้านใน Master ${M_SHOPS.size} สาขา · 1 IMEI = 1 เครื่อง · จัดทำเพื่อการวิเคราะห์ภายในเท่านั้น`;
+}
+
+document.getElementById('mExportCsvBtn').addEventListener('click', () => {
+  const prev = mPrevPeriod();
+  const cols = [['rank', 'อันดับ'], ['label', 'รุ่น'], ['series', 'กลุ่ม'], ['units', 'เครื่อง'], ['share', '% ส่วนแบ่ง'], ['shops', 'ร้านที่ขายได้']]
+    .concat(prev ? [['prevUnits', prev.key], ['prevRank', `อันดับ ${prev.key}`], ['chg', '% เปลี่ยน (เฉลี่ย/วัน)']] : []);
+  const lines = [cols.map(c => csvEscape(c[1])).join(',')];
+  M_LAST_RANK.forEach(r => lines.push(cols.map(([k]) => {
+    let v = r[k];
+    if ((k === 'share' || k === 'chg') && v != null) v = v.toFixed(1);
+    return csvEscape(v == null ? '' : v);
+  }).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  saveCsv(`SFPlus_SellOut_Model_${M_PERIOD.key}_${new Date().toISOString().slice(0, 10)}.csv`, blob);
+});
+
+buildLegend('mSeriesLegend', M_SERIES.map(s => ({ color: s.color, label: s.key })));
+mBuildFilters();
+if (M_PERIODS.length) buildModelWeekTabs();
+renderModelPage();
 
 </script>
 </body>
