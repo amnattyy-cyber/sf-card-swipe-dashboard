@@ -144,13 +144,13 @@ def short_name(n):
     return re.sub(r'^True Shop\s+', '', str(n)).strip()
 
 
-def build_sms(w):
-    R = w['records']; avail = w['available_dates']; n_left = len(w['dates']) - len(avail)
+def build_sms(w, region=None):
+    R = [r for r in w['records'] if region is None or r['region'] == region]; avail = w['available_dates']; n_left = len(w['dates']) - len(avail)
     passed = [r for r in R if r['flag'] == 'Pass']
     crit = [r for r in R if r['focus_sf'] == 'Y' and r['days_swiped'] == 0]
     crit_codes = {r['shop_code'] for r in crit}
     notpass = [r for r in R if r['flag'] != 'Pass' and r['shop_code'] not in crit_codes]
-    L = ['Dashboard Analysis: การเสียบบัตร SF+',
+    L = ['Dashboard Analysis: การเสียบบัตร SF+' + (f' · {region}' if region else ''),
          f"· สัปดาห์ {w['key']} ({thd(w['dates'][0])}–{thd(w['dates'][-1])} {w['dates'][-1][:4]})"]
     if len(avail) == len(w['dates']):
         L.append(f'มีข้อมูลการเสียบบัตรครบทั้ง {len(avail)} วัน (ผลสรุปสัปดาห์)')
@@ -188,11 +188,16 @@ def build_sms(w):
 
 
 def write_sms(w):
-    text = build_sms(w)
-    open(os.path.join(ROOT, 'sms.txt'), 'w', encoding='utf-8').write(text)
-    esc = text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+    import html as _h
+    msgs = [('ทั้งประเทศ', 'sms.txt', build_sms(w)), ('เฉพาะ BMA', 'sms_bma.txt', build_sms(w, 'BMA'))]
+    blocks = []
+    for i, (title, fname, text) in enumerate(msgs):
+        open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(text)
+        blocks.append(f'<section><div class="bar"><h2>{title}</h2><button class="primary copy" data-t="m{i}">📋 คัดลอกข้อความ</button>'
+                      f'<span class="ok"></span></div><pre id="m{i}">{_h.escape(text)}</pre></section>')
     page = open(os.path.join(ROOT, 'scripts', 'sms_template.html'), encoding='utf-8').read()
-    open(os.path.join(ROOT, 'sms.html'), 'w', encoding='utf-8').write(page.replace('__SMS__', esc).replace('__WEEK__', w['key']))
+    open(os.path.join(ROOT, 'sms.html'), 'w', encoding='utf-8').write(
+        page.replace('__BLOCKS__', '\n'.join(blocks)).replace('__WEEK__', w['key']))
 
 
 def main():

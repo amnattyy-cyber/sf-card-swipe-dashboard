@@ -11,18 +11,18 @@ h1{font-size:19px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;margin:0
 button,a.btn{font:inherit;font-size:13.5px;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;text-decoration:none}
 button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 pre{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;white-space:pre-wrap;word-break:break-word;font:13.5px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0}
-#ok{color:#0ca30c;font-size:13px;align-self:center}
+h2{font-size:15px;margin:0;align-self:center;margin-right:auto}section{margin-bottom:22px}.ok{color:#0ca30c;font-size:13px;align-self:center}
 </style></head><body><div class="wrap">
 <h1>สรุป SMS · การเสียบบัตร SF+ __WEEK__</h1>
 <p class="sub">สร้างอัตโนมัติทุกครั้งที่อัปโหลดไฟล์ Format SF · กดคัดลอกแล้ววางในข้อความได้เลย</p>
-<div class="bar"><button class="primary" id="copy">📋 คัดลอกข้อความ</button><a class="btn" href="./">← กลับไป Dashboard</a><span id="ok"></span></div>
-<pre id="sms">__SMS__</pre>
+<div class="bar"><a class="btn" href="./">← กลับไป Dashboard</a></div>
+__BLOCKS__
 </div>
 <script>
-document.getElementById('copy').addEventListener('click', async () => {
-  const t = document.getElementById('sms').innerText, ok = document.getElementById('ok');
-  try { await navigator.clipboard.writeText(t); ok.textContent = '✓ คัดลอกแล้ว'; }
-  catch (e) { const r = document.createRange(); r.selectNodeContents(document.getElementById('sms')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); ok.textContent = 'เลือกข้อความแล้ว กด Ctrl+C เพื่อคัดลอก'; }
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+  const pre = document.getElementById(b.dataset.t), ok = b.parentNode.querySelector('.ok');
+  try { await navigator.clipboard.writeText(pre.innerText); ok.textContent = '✓ คัดลอกแล้ว'; }
+  catch (e) { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); ok.textContent = 'เลือกข้อความแล้ว กด Ctrl+C'; }
   setTimeout(() => ok.textContent = '', 3000);
-});
+}));
 </script></body></html>

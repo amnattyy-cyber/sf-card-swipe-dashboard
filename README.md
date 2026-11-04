@@ -12,7 +12,7 @@
 
 ## สรุป SMS ประจำวัน
 
-เปิด https://amnattyy-cyber.github.io/sf-card-swipe-dashboard/sms.html แล้วกด **📋 คัดลอกข้อความ** ระบบสร้างสรุปใหม่ทุกครั้งที่อัปโหลดไฟล์ Format SF (มีไฟล์ข้อความ `sms.txt` ให้ด้วย)
+เปิด https://amnattyy-cyber.github.io/sf-card-swipe-dashboard/sms.html แล้วกด **📋 คัดลอกข้อความ** ระบบสร้างสรุปใหม่ทุกครั้งที่อัปโหลดไฟล์ Format SF มี 2 ข้อความ คือทั้งประเทศ (`sms.txt`) และเฉพาะ BMA (`sms_bma.txt`)
 
 ## หลักการทำงาน
 
