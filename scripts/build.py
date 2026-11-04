@@ -8,7 +8,7 @@ Inputs (folder data/):
 Weeks already built are kept in history/weeks_history.json so older weeks stay
 on the dashboard even after they are removed from the Excel file.
 """
-import glob, json, os, re, sys
+import glob, json, os, re, subprocess, sys
 import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,9 +19,30 @@ OUT = os.path.join(ROOT, 'index.html')
 MAX_WEEKS = 6  # number of week tabs shown
 
 
-def latest(pattern):
-    files = sorted(glob.glob(os.path.join(DATA, pattern)))  # by name (dates in filenames)
-    return files
+def _norm(name):
+    return re.sub(r'[^a-z0-9]', '', name.lower())
+
+
+def _commit_time(path):
+    """Last git commit time of a file (uploads all share one mtime in Actions)."""
+    try:
+        out = subprocess.run(['git', 'log', '-1', '--format=%ct', '--', path], cwd=ROOT,
+                             capture_output=True, text=True).stdout.strip()
+        return int(out) if out else int(os.path.getmtime(path))
+    except Exception:
+        return int(os.path.getmtime(path))
+
+
+def find(kind):
+    """Files in data/ of one kind, oldest first.  Names are matched loosely, so
+    'Format SF+.xlsx', 'Format_SF.xlsx', 'Report Sell Out SF+_...csv' all work."""
+    rules = {
+        'format': lambda n: n.endswith('xlsx') and 'format' in n and 'sf' in n,
+        'sellout': lambda n: n.endswith('csv') and 'sellout' in n,
+        'funnel': lambda n: n.endswith('csv') and 'funnel' in n,
+    }
+    files = [f for f in glob.glob(os.path.join(DATA, '*')) if rules[kind](_norm(os.path.basename(f)))]
+    return sorted(files, key=lambda f: (_commit_time(f), os.path.basename(f)))
 
 
 def to_iso(v):
@@ -65,7 +86,7 @@ def read_sellout():
     """Sell out units per shop per day.  Raw CSVs (which contain IMEIs) are reduced to
     shop/day counts, merged into history/sellout_daily.json, and then deleted."""
     hist = json.load(open(SELL_HIST, encoding='utf-8')) if os.path.exists(SELL_HIST) else {}
-    files = latest('Report_Sell_Out*.csv')
+    files = find('sellout')
     if files:
         df = pd.concat([pd.read_csv(f, encoding='utf-8-sig', dtype={'Mobile_IMEI': str}) for f in files])
         # the report can list one device (IMEI) several times under different product codes
@@ -85,7 +106,7 @@ def read_sellout():
 
 
 def read_funnel():
-    files = latest('Report_Sales_Funnel*.csv')
+    files = find('funnel')
     if not files:
         return {}, set()
     parts = []
@@ -101,9 +122,9 @@ def read_funnel():
 
 
 def main():
-    fmt_files = latest('Format*SF*.xlsx')
+    fmt_files = find('format')
     if not fmt_files:
-        sys.exit('ไม่พบไฟล์ Format_SF*.xlsx ในโฟลเดอร์ data/')
+        sys.exit('ไม่พบไฟล์ Format SF (.xlsx) ในโฟลเดอร์ data/')
     fmt_path = fmt_files[-1]
     weeks = json.load(open(HIST, encoding='utf-8')) if os.path.exists(HIST) else {}
     weeks.update(read_format(fmt_path))
@@ -141,6 +162,10 @@ def main():
     hist = {k: w for k, w in weeks.items() if w['available_dates']}
     os.makedirs(os.path.dirname(HIST), exist_ok=True)
     json.dump(hist, open(HIST, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+
+    # keep only the newest Format file so the next upload is unambiguous
+    for f in fmt_files[:-1]:
+        os.remove(f)
 
     print('source:', os.path.basename(fmt_path))
     for w in out:
