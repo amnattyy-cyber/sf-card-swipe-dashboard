@@ -16,7 +16,8 @@ DATA = os.path.join(ROOT, 'data')
 HIST = os.path.join(ROOT, 'history', 'weeks_history.json')
 TEMPLATE = os.path.join(ROOT, 'scripts', 'template.html')
 OUT = os.path.join(ROOT, 'index.html')
-MAX_WEEKS = 6  # number of week tabs shown
+MAX_WEEKS = 6  # number of week tabs with data shown
+PLACEHOLDER_WEEKS = 2  # empty tabs shown ahead of the latest week (e.g. WK46, WK47)
 
 
 def _norm(name):
@@ -251,6 +252,19 @@ def main():
         sys.exit('ยังไม่มีสัปดาห์ที่มีข้อมูล')
     last = num(with_data[-1])
     keys = sorted([k for k in weeks if num(k) <= last], key=num)[-MAX_WEEKS:]
+
+    # empty "waiting" tabs for the next PLACEHOLDER_WEEKS weeks after the latest data
+    base = weeks[with_data[-1]]
+    monday = pd.Timestamp(base['dates'][0])
+    for i in range(1, PLACEHOLDER_WEEKS + 1):
+        k = f'WK{last + i}'
+        if k in weeks and weeks[k]['available_dates']:
+            continue
+        dates = weeks[k]['dates'] if k in weeks else \
+            [(monday + pd.Timedelta(days=7 * i + j)).strftime('%Y-%m-%d') for j in range(7)]
+        recs = [dict(r, days={d: 0 for d in dates}, days_swiped=0, flag='Not Pass') for r in base['records']]
+        weeks[k] = dict(key=k, dates=dates, available_dates=[], records=recs)
+        keys.append(k)
 
     # master = shops of the latest week; drop shops not in master
     master = {r['shop_code'] for r in weeks[with_data[-1]]['records']}
