@@ -1,64 +1,51 @@
 Dashboard Analysis: การเสียบบัตร SF+ · BMA
 · สัปดาห์ WK46 (9 พ.ย.–15 พ.ย. 2026)
-มีข้อมูลการเสียบบัตรเฉพาะวันที่ 9 พ.ย. (เหลืออีก 6 วันในสัปดาห์)
-เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 0/45 สาขา (0.0%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
+มีข้อมูลการเสียบบัตรเฉพาะวันที่ 9-10 พ.ย. (เหลืออีก 5 วันในสัปดาห์)
+เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 13/45 สาขา (28.9%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
 
-⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 19 สาขา
+⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 10 สาขา
 เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม 2 วัน
-[BMA I - North West] 3 สาขา
-- Central West Gate
-- Lotus's Nakhon In
+[BMA I - North West] 1 สาขา
 - Robinson Ratchapruek
-[BMA II - South West] 5 สาขา
-- Central Pinklao 3Fl.
+[BMA II - South West] 4 สาขา
 - Central Rama 2
 - Central Rama 2 (H)
 - Lotus's Bangpakok
 - The Mall Thapra
-[BMA III - North East] 3 สาขา
-- Future Park Rangsit
-- Lotus's Sukhapibal 3
+[BMA III - North East] 1 สาขา
 - iPlace Latkrabang
 [BMA IV - South East] 2 สาขา
 - Paradise Park Srinakarin
 - The Mall Bangkapi
-[BMA V - Central] 6 สาขา
+[BMA V - Central] 2 สาขา
 - Central Festival East Ville
-- Central World 4Fl.
 - Kiosk Lotus's Ramindra
-- Makro Sri Ayutthaya
-- Silom Complex
-- Terminal 21
 
-⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 26 สาขา (ไม่รวมกลุ่มด้านบน)
-[BMA I - North West] 11 สาขา
-- Big C Chaengwattana: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Big C Sainoi Nonthaburi: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Big C Sukhapibal 5: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central Chaengwattana: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central Ladprao: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 22 สาขา (ไม่รวมกลุ่มด้านบน)
+[BMA I - North West] 4 สาขา
 - Central Plaza Ramindra 1FL.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central Westville: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Gateway Bangsue: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Robinson Srisaman: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- The Mall Ngamwongwan 3Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Central West Gate: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Lotus's Nakhon In: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Wongsawang Town Center: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA II - South West] 2 สาขา
+[BMA II - South West] 3 สาขา
+- Central Pinklao 3Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Seacon Bangkae: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - The Mall Bangkae 2Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA III - North East] 2 สาขา
+[BMA III - North East] 4 สาขา
 - Fashion Island: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Future Park Rangsit: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Future Park Rangsit (H): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA IV - South East] 5 สาขา
-- Imperial World Samrong: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Lotus's Sukhapibal 3: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[BMA IV - South East] 3 สาขา
 - Lotus's Bangna-trad: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Phatthanakan: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Mega Bangna: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Seacon Square 2: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA V - Central] 6 สาขา
+[BMA V - Central] 8 สาขา
 - Central Rama 3: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Rama 9: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Fortune Town 1Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Central World 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Mahboon Krong 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Makro Sri Ayutthaya: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Silom Complex: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Station Lotus's Rama 4: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- at Chamchuri Square 1: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Terminal 21: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
