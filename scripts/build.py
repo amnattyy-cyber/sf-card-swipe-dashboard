@@ -253,9 +253,46 @@ def build_sms(w, region=None):
     return '\n'.join(L)
 
 
+def build_sms_area(w):
+    """Area view: counts per area for each group, no branch names (Focus Y only)."""
+    R = [r for r in w['records'] if r['focus_sf'] == 'Y']
+    avail = w['available_dates']; n_left = len(w['dates']) - len(avail)
+    passed = [r for r in R if r['flag'] == 'Pass']
+    crit = [r for r in R if r['days_swiped'] == 0]
+    notpass = [r for r in R if r['flag'] != 'Pass' and r['days_swiped'] > 0]
+    L = ['Dashboard Analysis: การเสียบบัตร SF+ · สรุปราย Area',
+         f"· สัปดาห์ {w['key']} ({thd(w['dates'][0])}–{thd(w['dates'][-1])} {w['dates'][-1][:4]})"]
+    if len(avail) == len(w['dates']):
+        L.append(f'มีข้อมูลการเสียบบัตรครบทั้ง {len(avail)} วัน (ผลสรุปสัปดาห์)')
+    else:
+        L.append(f'มีข้อมูลการเสียบบัตรเฉพาะวันที่ {date_span(avail)} (เหลืออีก {n_left} วันในสัปดาห์)')
+    L.append(f'เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว {len(passed)}/{len(R)} สาขา ({len(passed) / max(len(R), 1) * 100:.1f}%) · เกณฑ์ผ่าน = เสียบบัตร {PASS_DAYS} วัน/week ขึ้นไป')
+
+    areas = sorted({(r['region'], r['area']) for r in R})
+    tot = {a: sum(1 for r in R if (r['region'], r['area']) == a) for a in areas}
+
+    def section(title, sub, rows):
+        L.extend(['', f'{title} {len(rows)} สาขา'] + ([sub] if sub else []))
+        cnt = {a: sum(1 for r in rows if (r['region'], r['area']) == a) for a in areas}
+        shown = [a for a in areas if cnt[a]]
+        if not shown:
+            L.append('✓ ไม่มี')
+        region = None
+        for a in shown:
+            if a[0] != region:
+                region = a[0]; L.append(f'[{region}]')
+            L.append(f'- {a[1]}: {cnt[a]} สาขา (จาก Focus {tot[a]})')
+
+    section('✓ ร้าน Focus SF+ ที่ผ่านเกณฑ์แล้ว', '', passed)
+    section('⚠ ร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย)', f'เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม {PASS_DAYS} วัน', crit)
+    section('⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้', 'เสียบแล้ว 1 วัน · ต้องเสียบเพิ่ม 1 วัน (ไม่รวมกลุ่มด้านบน)', notpass)
+    return '\n'.join(L)
+
+
 def write_sms(w):
     import html as _h
-    msgs = [('ทั้งประเทศ', 'sms.txt', build_sms(w)), ('เฉพาะ BMA', 'sms_bma.txt', build_sms(w, 'BMA'))]
+    msgs = [('ทั้งประเทศ', 'sms.txt', build_sms(w)), ('เฉพาะ BMA', 'sms_bma.txt', build_sms(w, 'BMA')),
+            ('สรุปราย Area (ไม่ระบุชื่อสาขา)', 'sms_area.txt', build_sms_area(w))]
     blocks = []
     for i, (title, fname, text) in enumerate(msgs):
         open(os.path.join(ROOT, fname), 'w', encoding='utf-8').write(text)
