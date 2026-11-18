@@ -46,6 +46,21 @@ def find(kind):
     return sorted(files, key=lambda f: (_commit_time(f), os.path.basename(f)))
 
 
+DATE_FORMATS = ['%m/%d/%Y', '%d-%m-%y', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d', '%d/%m/%Y', '%d-%m-%Y']
+
+
+def parse_dates(col):
+    """Report files have used several date styles (11/2/2026, 01-11-26, 2026-11-01 00:00:00).
+    Use the first format that reads every value."""
+    col = col.astype(str).str.strip()
+    for fmt in DATE_FORMATS:
+        d = pd.to_datetime(col, format=fmt, errors='coerce')
+        if d.notna().all():
+            return d.dt.strftime('%Y-%m-%d')
+    bad = col[pd.to_datetime(col, errors='coerce').isna()].head(3).tolist()
+    raise ValueError(f'อ่านรูปแบบวันที่ไม่ได้: {bad}')
+
+
 def to_iso(v):
     return pd.to_datetime(v).strftime('%Y-%m-%d')
 
@@ -112,12 +127,20 @@ def read_sellout():
         df = pd.concat([pd.read_csv(f, encoding='utf-8-sig', dtype={'Mobile_IMEI': str}) for f in files])
         # the report can list one device (IMEI) several times under different product codes
         df = df.dropna(subset=['Mobile_IMEI']).drop_duplicates(subset=['Mobile_IMEI'], keep='last')
-        df['d'] = pd.to_datetime(df['Financed_Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
+        df['d'] = parse_dates(df['Financed_Date'])
         df['model'], df['family'] = _model_labels(df, raw['prefix'])
         new = {}
         for (sc, d, mo), q in df.groupby(['Partner Code', 'd', 'model'])['QTY SF+'].sum().items():
             new.setdefault(d, {}).setdefault(str(int(sc)), {})[mo] = int(q)
-        raw['days'].update(new)  # dates in the new file replace older counts for those dates
+        # dates in the new file replace older counts for those dates - unless the new file has
+        # clearly fewer devices for a date than already recorded (a partial export)
+        for d, shops in new.items():
+            old_n = sum(q for ms in raw['days'].get(d, {}).values() for q in ms.values())
+            new_n = sum(q for ms in shops.values() for q in ms.values())
+            if old_n and new_n < 0.8 * old_n:
+                print(f'⚠ Sell Out {d}: ไฟล์ใหม่มี {new_n} เครื่อง น้อยกว่าที่เคยมี {old_n} เครื่อง — ใช้ข้อมูลเดิม')
+                continue
+            raw['days'][d] = shops
         raw['family'].update(dict(zip(df['model'], df['family'])))
         json.dump(raw, open(SELL_HIST, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'), sort_keys=True)
         for f in files:
@@ -150,9 +173,14 @@ def read_funnel():
         return {}, set()
     parts = []
     for i, f in enumerate(files):
-        t = pd.read_csv(f); t['_order'] = i; parts.append(t)
+        t = pd.read_csv(f, encoding='utf-8-sig')
+        # newer exports: COMMON/CUSTOMER REF CODE = shop code, demographic_submitted = attempt
+        t = t.rename(columns={'COMMON/CUSTOMER REF CODE': 'Shop Code', 'demographic_submitted': 'Attempt'})
+        t['d'] = parse_dates(t['Date'])
+        t['Shop Code'] = pd.to_numeric(t['Shop Code'], errors='coerce')
+        t = t.dropna(subset=['Shop Code'])
+        t['_order'] = i; parts.append(t)
     df = pd.concat(parts)
-    df['d'] = pd.to_datetime(df['Date'], format='%m/%d/%Y').dt.strftime('%Y-%m-%d')
     # a newer file replaces older rows for the same date
     newest = df.groupby('d')['_order'].transform('max')
     df = df[df['_order'] == newest]
