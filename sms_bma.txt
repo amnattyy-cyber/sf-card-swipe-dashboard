@@ -1,39 +1,34 @@
 Dashboard Analysis: การเสียบบัตร SF+ · BMA
 · สัปดาห์ WK47 (16 พ.ย.–22 พ.ย. 2026)
-มีข้อมูลการเสียบบัตรเฉพาะวันที่ 16-18 พ.ย. (เหลืออีก 4 วันในสัปดาห์)
-เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 23/45 สาขา (51.1%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
+มีข้อมูลการเสียบบัตรเฉพาะวันที่ 16-19 พ.ย. (เหลืออีก 3 วันในสัปดาห์)
+เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 27/45 สาขา (60.0%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
 
-⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 7 สาขา
+⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 5 สาขา
 เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม 2 วัน
 [BMA II - South West] 1 สาขา
 - Lotus's Bangpakok
 [BMA IV - South East] 1 สาขา
 - Lotus's Phatthanakan
-[BMA V - Central] 5 สาขา
-- Central Rama 3
+[BMA V - Central] 3 สาขา
 - Central Rama 9
 - Fortune Town 1Fl.
 - Makro Sri Ayutthaya
-- at Chamchuri Square 1
 
-⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 15 สาขา (ไม่รวมกลุ่มด้านบน)
-[BMA I - North West] 3 สาขา
+⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 13 สาขา (ไม่รวมกลุ่มด้านบน)
+[BMA I - North West] 2 สาขา
 - Central West Gate: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Robinson Ratchapruek: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Wongsawang Town Center: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA II - South West] 3 สาขา
+[BMA II - South West] 2 สาขา
 - Seacon Bangkae: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - The Mall Bangkae 2Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- The Mall Thapra: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA III - North East] 1 สาขา
-- Fashion Island: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA IV - South East] 4 สาขา
+[BMA IV - South East] 3 สาขา
 - Lotus's Bangna-trad: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Mega Bangna: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Paradise Park Srinakarin: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Seacon Square 2: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA V - Central] 4 สาขา
+[BMA V - Central] 6 สาขา
+- Central Rama 3: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central World 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Silom Complex: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Station Lotus's Rama 4: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Terminal 21: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- at Chamchuri Square 1: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
