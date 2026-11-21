@@ -1,59 +1,59 @@
 Dashboard Analysis: การเสียบบัตร SF+ · สรุปราย Area
 · สัปดาห์ WK47 (16 พ.ย.–22 พ.ย. 2026)
-มีข้อมูลการเสียบบัตรเฉพาะวันที่ 16-19 พ.ย. (เหลืออีก 3 วันในสัปดาห์)
-เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 75/161 สาขา (46.6%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
+มีข้อมูลการเสียบบัตรเฉพาะวันที่ 16-20 พ.ย. (เหลืออีก 2 วันในสัปดาห์)
+เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 90/161 สาขา (55.9%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
 
-✓ ร้าน Focus SF+ ที่ผ่านเกณฑ์แล้ว 75 สาขา
+✓ ร้าน Focus SF+ ที่ผ่านเกณฑ์แล้ว 90 สาขา
 [BMA]
 - BMA I - North West: 12 สาขา (จาก Focus 14)
-- BMA II - South West: 4 สาขา (จาก Focus 7)
+- BMA II - South West: 5 สาขา (จาก Focus 7)
 - BMA III - North East: 5 สาขา (จาก Focus 5)
-- BMA IV - South East: 3 สาขา (จาก Focus 7)
-- BMA V - Central: 3 สาขา (จาก Focus 12)
+- BMA IV - South East: 4 สาขา (จาก Focus 7)
+- BMA V - Central: 5 สาขา (จาก Focus 12)
 [UPC I]
 - UPC - Central Northeast: 9 สาขา (จาก Focus 12)
 - UPC - Lower North: 2 สาขา (จาก Focus 4)
-- UPC - Lower Northeast: 13 สาขา (จาก Focus 28)
-- UPC - Upper North: 4 สาขา (จาก Focus 11)
-- UPC - Upper Northeast: 7 สาขา (จาก Focus 22)
+- UPC - Lower Northeast: 16 สาขา (จาก Focus 28)
+- UPC - Upper North: 5 สาขา (จาก Focus 11)
+- UPC - Upper Northeast: 11 สาขา (จาก Focus 22)
 [UPC II]
-- UPC - Central: 4 สาขา (จาก Focus 12)
-- UPC - East: 3 สาขา (จาก Focus 9)
+- UPC - Central: 5 สาขา (จาก Focus 12)
+- UPC - East: 5 สาขา (จาก Focus 9)
 - UPC - Lower South: 2 สาขา (จาก Focus 2)
 - UPC - Upper South: 2 สาขา (จาก Focus 6)
 - UPC - West: 2 สาขา (จาก Focus 10)
 
-⚠ ร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 41 สาขา
+⚠ ร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 29 สาขา
 เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม 2 วัน
 [BMA]
 - BMA II - South West: 1 สาขา (จาก Focus 7)
 - BMA IV - South East: 1 สาขา (จาก Focus 7)
-- BMA V - Central: 3 สาขา (จาก Focus 12)
+- BMA V - Central: 1 สาขา (จาก Focus 12)
 [UPC I]
 - UPC - Lower North: 1 สาขา (จาก Focus 4)
-- UPC - Lower Northeast: 6 สาขา (จาก Focus 28)
-- UPC - Upper North: 5 สาขา (จาก Focus 11)
-- UPC - Upper Northeast: 6 สาขา (จาก Focus 22)
+- UPC - Lower Northeast: 1 สาขา (จาก Focus 28)
+- UPC - Upper North: 3 สาขา (จาก Focus 11)
+- UPC - Upper Northeast: 4 สาขา (จาก Focus 22)
 [UPC II]
 - UPC - Central: 7 สาขา (จาก Focus 12)
 - UPC - East: 2 สาขา (จาก Focus 9)
-- UPC - Upper South: 4 สาขา (จาก Focus 6)
+- UPC - Upper South: 3 สาขา (จาก Focus 6)
 - UPC - West: 5 สาขา (จาก Focus 10)
 
-⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 45 สาขา
+⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 42 สาขา
 เสียบแล้ว 1 วัน · ต้องเสียบเพิ่ม 1 วัน (ไม่รวมกลุ่มด้านบน)
 [BMA]
 - BMA I - North West: 2 สาขา (จาก Focus 14)
-- BMA II - South West: 2 สาขา (จาก Focus 7)
-- BMA IV - South East: 3 สาขา (จาก Focus 7)
+- BMA II - South West: 1 สาขา (จาก Focus 7)
+- BMA IV - South East: 2 สาขา (จาก Focus 7)
 - BMA V - Central: 6 สาขา (จาก Focus 12)
 [UPC I]
 - UPC - Central Northeast: 3 สาขา (จาก Focus 12)
 - UPC - Lower North: 1 สาขา (จาก Focus 4)
-- UPC - Lower Northeast: 9 สาขา (จาก Focus 28)
-- UPC - Upper North: 2 สาขา (จาก Focus 11)
-- UPC - Upper Northeast: 9 สาขา (จาก Focus 22)
+- UPC - Lower Northeast: 11 สาขา (จาก Focus 28)
+- UPC - Upper North: 3 สาขา (จาก Focus 11)
+- UPC - Upper Northeast: 7 สาขา (จาก Focus 22)
 [UPC II]
-- UPC - Central: 1 สาขา (จาก Focus 12)
-- UPC - East: 4 สาขา (จาก Focus 9)
+- UPC - East: 2 สาขา (จาก Focus 9)
+- UPC - Upper South: 1 สาขา (จาก Focus 6)
 - UPC - West: 3 สาขา (จาก Focus 10)
