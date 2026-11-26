@@ -1,81 +1,60 @@
 Dashboard Analysis: การเสียบบัตร SF+
 · สัปดาห์ WK48 (23 พ.ย.–29 พ.ย. 2026)
-มีข้อมูลการเสียบบัตรเฉพาะวันที่ 23-24 พ.ย. (เหลืออีก 5 วันในสัปดาห์)
-เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 19/161 สาขา (11.8%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
+มีข้อมูลการเสียบบัตรเฉพาะวันที่ 23-25 พ.ย. (เหลืออีก 4 วันในสัปดาห์)
+เฉพาะร้าน Focus SF+ (Y) · ผ่านเกณฑ์แล้ว 45/161 สาขา (28.0%) · เกณฑ์ผ่าน = เสียบบัตร 2 วัน/week ขึ้นไป
 
-⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 81 สาขา
+⚠ รายชื่อร้าน Focus SF+ ที่มีความเสี่ยงสูง (ยังไม่เสียบบัตรเลย) 54 สาขา
 เสียบแล้ว 0 วัน · ต้องเสียบเพิ่ม 2 วัน
-[BMA I - North West] 5 สาขา
-- Big C Sukhapibal 5
-- Central Chaengwattana
-- Central Ladprao
+[BMA I - North West] 1 สาขา
 - Gateway Bangsue
-- Robinson Srisaman
-[BMA II - South West] 5 สาขา
+[BMA II - South West] 4 สาขา
 - Central Pinklao 3Fl.
 - Central Rama 2
 - Central Rama 2 (H)
 - Lotus's Bangpakok
-- The Mall Bangkae 2Fl.
 [BMA III - North East] 2 สาขา
 - Fashion Island
 - iPlace Latkrabang
-[BMA IV - South East] 3 สาขา
+[BMA IV - South East] 2 สาขา
 - Lotus's Bangna-trad
 - Lotus's Phatthanakan
-- Seacon Square 2
-[BMA V - Central] 4 สาขา
-- Central Rama 3
-- Fortune Town 1Fl.
+[BMA V - Central] 1 สาขา
 - Makro Sri Ayutthaya
-- at Chamchuri Square 1
-[UPC - Central Northeast] 5 สาขา
+[UPC - Central Northeast] 4 สาขา
 - Khamcha-I Mukdahan
 - Lotus's Chiangyuen Mahasarakham
 - Lotus's Det Udom Ubonratchathani
 - Lotus's Phonthong Roiet
-- Robinson Mukdahan
 [UPC - Lower North] 2 สาขา
 - Robinson Khamphaengphet
 - Robinson Mae Sot
-[UPC - Lower Northeast] 15 สาขา
+[UPC - Lower Northeast] 8 สาขา
 - Big C Chaiyaphum
 - Big C Korat 2
 - Chumphuang Nakhonratchasima
 - Down Town Nakhonratchasima
 - Lotus's Buayai Nakhonratchasima
 - Lotus's JorHor Nakhonratchasima
-- Lotus's Nonthai Nakhonratchasima
-- Lotus's Phimai Nakhonratchasima
-- Lotus's Prakonchai Buriram
 - Lotus's Prasat Surin
 - Lotus's Satuek Buriram
-- Nongbunmak Nakhonratchasima
-- Pakthongchai Nakhonratchasima
-- Robinson Buriram
-- Sikhoraphum Surin
-[UPC - Upper North] 7 สาขา
+[UPC - Upper North] 6 สาขา
 - Central Festival Chiangmai
 - Lotus's Chiangkham Phayao
 - Lotus's Fang Chiangmai
 - Lotus's Jomthong Chiangmai
 - Lotus's Phayao
-- Lotus's Ruamchok Chiangmai
 - Maya Chiangmai
-[UPC - Upper Northeast] 11 สาขา
-- Big C Bandung Udonthani
+[UPC - Upper Northeast] 9 สาขา
 - Big C Banphai Khon Kaen
 - Big C Khonkaen 2
 - Big C Phangkhon Sakonnakhon
 - Central Plaza Udonthani
 - Lotus's Kalasin
-- Lotus's Nakhonphanom
 - Lotus's Nongruea  Khonkaen
 - Lotus's Phon Khonkaen
 - Lotus's Somdet Kalasin
 - Wangsaphung Loei
-[UPC - Central] 9 สาขา
-- Ayudhaya Park
+[UPC - Central] 7 สาขา
 - Big C Nongbua Nakhonsawan
 - Kiosk Lotus's Sena Ayutthaya
 - Lotus's Bang Pa-In Ayudhaya
@@ -83,88 +62,81 @@ Dashboard Analysis: การเสียบบัตร SF+
 - Robinson Lopburi
 - The Walk Nakornsawan
 - True Move Shop Taweekit Complex Saraburi
-- True shop Central Ayutthaya
-[UPC - East] 6 สาขา
+[UPC - East] 4 สาขา
 - Central Chanthaburi
-- Central Plaza Rayong
 - South Pattaya
 - Terminal 21 Pattaya
 - Trad
-- True shop Central Plaza Si Racha
 [UPC - Upper South] 2 สาขา
 - Central Krabi
 - Lotus's Ranong
-[UPC - West] 5 สาขา
+[UPC - West] 2 สาขา
 - Central Nakhonpathom
-- Central Plaza Mahachai
 - Hua Hin
-- Lotus's U-Thong Suphanburi
-- Station Lotus's Pranburi Prachuapkhirikhan
 
-⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 61 สาขา (ไม่รวมกลุ่มด้านบน)
-[BMA I - North West] 5 สาขา
-- Big C Chaengwattana: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central West Gate: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Nakhon In: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+⚠ ร้าน Focus SF+ ที่ยังไม่ผ่านเกณฑ์ (Not Pass) ในสัปดาห์นี้ 62 สาขา (ไม่รวมกลุ่มด้านบน)
+[BMA I - North West] 6 สาขา
+- Big C Sukhapibal 5: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Central Chaengwattana: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Central Ladprao: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Robinson Ratchapruek: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Robinson Srisaman: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - The Mall Ngamwongwan 3Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA II - South West] 1 สาขา
+[BMA II - South West] 2 สาขา
 - Seacon Bangkae: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[BMA III - North East] 3 สาขา
-- Future Park Rangsit: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- The Mall Bangkae 2Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[BMA III - North East] 1 สาขา
 - Future Park Rangsit (H): เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Sukhapibal 3: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 [BMA IV - South East] 2 สาขา
 - Mega Bangna: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Paradise Park Srinakarin: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Seacon Square 2: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 [BMA V - Central] 6 สาขา
+- Central Rama 3: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Rama 9: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central World 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Kiosk Lotus's Ramindra: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Mahboon Krong 4Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Fortune Town 1Fl.: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Station Lotus's Rama 4: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Terminal 21: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - Central Northeast] 6 สาขา
-- Central Ubonratchathani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- at Chamchuri Square 1: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[UPC - Central Northeast] 2 สาขา
 - Kasetwisai Roiet: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Trakan Phuet Phon Ubonratchathani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Ubonratchathani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Yasothon: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Robinson Roi-Et: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Robinson Mukdahan: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 [UPC - Lower North] 2 สาขา
 - Central Phitsanulok: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Thaluang Phichit: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - Lower Northeast] 11 สาขา
-- Big C Nongki Buriram: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[UPC - Lower Northeast] 12 สาขา
 - Central Plaza Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Huai Thalaeng Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Kaset Sombun Chaiyaphum: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Khon Buri Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Kaengkhro Chaiyaphum: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Lamplaimat Buriram: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Lotus's Nonthai Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Lotus's Phimai Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Lotus's Prakonchai Buriram: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Sungkha Surin: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Thatum Surin: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Nongbunmak Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Pakthongchai Nakhonratchasima: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Robinson Buriram: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Robinson Chaiyaphum: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Sikhoraphum Surin: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Terminal 21 Korat: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - Upper North] 3 สาขา
+[UPC - Upper North] 4 สาขา
 - Big C Chiangmai: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Chiangrai: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Lampang: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - Upper Northeast] 8 สาขา
+- Lotus's Ruamchok Chiangmai: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[UPC - Upper Northeast] 6 สาขา
 - Asawann Phonphisai Nong Khai: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Asawann Shopping Complex Nongkhai: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Big C Bandung Udonthani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Big C Khamtakla Sakonnakhon: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Big C Loei: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Central Khonkaen: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Buengkan: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Lotus's Nongbualamphu: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- UD Town Udonthani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - Central] 3 สาขา
+- Lotus's Nakhonphanom: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[UPC - Central] 4 สาขา
+- Ayudhaya Park: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Nakhonsawan: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Keangkoi Saraburi: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-- Uthaithani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - East] 1 สาขา
+- True shop Central Ayutthaya: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[UPC - East] 3 สาขา
+- Central Plaza Rayong: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Chonburi: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- True shop Central Plaza Si Racha: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 [UPC - Lower South] 2 สาขา
 - Central Festival Hadyai Songkhla: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Plaza Nakhonsithammarat: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
@@ -172,9 +144,11 @@ Dashboard Analysis: การเสียบบัตร SF+
 - Central Festival Phuket: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Festival Samui Suratthani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Central Suratthani: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
-[UPC - West] 5 สาขา
-- Central Plaza Salaya: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+[UPC - West] 7 สาขา
+- Central Plaza Mahachai: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Nakhonpathom: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Samchuk Suphanburi: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Lotus's Sampran Nakhonpathom: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Lotus's U-Thong Suphanburi: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
 - Robinson Kanchanaburi: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
+- Station Lotus's Pranburi Prachuapkhirikhan: เสียบ 1 วัน ต้องเสียบเพิ่ม 1 วัน
