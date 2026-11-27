@@ -303,6 +303,18 @@ def write_sms(w):
         page.replace('__BLOCKS__', '\n'.join(blocks)).replace('__WEEK__', w['key']))
 
 
+def read_excluded():
+    """Shop codes listed in config/excluded_shops.txt (closed branches etc.)."""
+    path = os.path.join(ROOT, 'config', 'excluded_shops.txt')
+    codes = set()
+    if os.path.exists(path):
+        for line in open(path, encoding='utf-8'):
+            line = line.split('#', 1)[0].strip()
+            if line:
+                codes.add(int(line.split()[0]))
+    return codes
+
+
 def main():
     fmt_files = find('format')
     if not fmt_files:
@@ -332,7 +344,8 @@ def main():
         keys.append(k)
 
     # master = shops of the latest week; drop shops not in master
-    master = {r['shop_code'] for r in weeks[with_data[-1]]['records']}
+    excluded = read_excluded()
+    master = {r['shop_code'] for r in weeks[with_data[-1]]['records']} - excluded
     sell, (smin, smax), sell_raw = read_sellout()
     fun, fdates = read_funnel()
 

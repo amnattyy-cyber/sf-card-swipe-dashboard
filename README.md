@@ -14,6 +14,10 @@
 
 เปิด https://amnattyy-cyber.github.io/sf-card-swipe-dashboard/sms.html แล้วกด **📋 คัดลอกข้อความ** ระบบสร้างสรุปใหม่ทุกครั้งที่อัปโหลดไฟล์ Format SF มี 2 ข้อความ คือทั้งประเทศ (`sms.txt`) และเฉพาะ BMA (`sms_bma.txt`)
 
+## ตัดสาขาออกจากรายงาน
+
+เพิ่ม Shop Code ในไฟล์ [`config/excluded_shops.txt`](config/excluded_shops.txt) บรรทัดละ 1 สาขา (กดไอคอนดินสอเพื่อแก้ไข แล้ว Commit) ระบบจะตัดสาขานั้นออกจากทุกสัปดาห์ ทุกแท็บ และ SMS
+
 ## หลักการทำงาน
 
 - Dashboard ใช้ชีต `WKxx` ใน Format_SF.xlsx โดยสัปดาห์ล่าสุดคือสัปดาห์สุดท้ายที่มีข้อมูล และแสดงย้อนหลัง 6 สัปดาห์

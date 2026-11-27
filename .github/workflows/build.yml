@@ -5,6 +5,7 @@ on:
     paths:
       - 'data/**'
       - 'scripts/**'
+      - 'config/**'
   workflow_dispatch:
   schedule:
     # safety net in case an upload does not trigger a build: every 2 hours, 08:23-18:23 Bangkok time
